@@ -26,6 +26,7 @@ const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const postcssNormalize = require('postcss-normalize');
+const px2rem = require('postcss-px2rem-exclude');
 
 const appPackageJson = require(paths.appPackageJson);
 
@@ -109,6 +110,7 @@ module.exports = function (webpackEnv) {
               stage: 3,
             }),
             postcssNormalize(),
+            px2rem({ remUnit: 37.5, exclude: '/node_modules|floder_name/i' }),
           ],
           sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
         },
@@ -351,7 +353,18 @@ module.exports = function (webpackEnv) {
                 modules: {
                   getLocalIdent: getCSSModuleLocalIdent,
                 },
-              }),
+              }).concat([
+                {
+                  loader: 'sass-resources-loader',
+                  options: {
+                    resources: [
+                      path.join(__dirname, '../src/styles/init.scss'),
+                      path.join(__dirname, '../src/styles/theme.scss'),
+                      path.join(__dirname, '../src/styles/mixin.scss'),
+                    ],
+                  },
+                },
+              ]),
             },
             {
               test: sassRegex,
@@ -364,7 +377,18 @@ module.exports = function (webpackEnv) {
                     : isEnvDevelopment,
                 },
                 'sass-loader'
-              ),
+              ).concat([
+                {
+                  loader: 'sass-resources-loader',
+                  options: {
+                    resources: [
+                      path.join(__dirname, '../src/styles/init.scss'),
+                      path.join(__dirname, '../src/styles/theme.scss'),
+                      path.join(__dirname, '../src/styles/mixin.scss'),
+                    ],
+                  },
+                },
+              ]),
               sideEffects: true,
             },
             {

@@ -1,7 +1,5 @@
 import React from 'react';
 
-const Message = () => {
+export default function Message() {
   return <div className="">message</div>;
-};
-
-export default Message;
+}

@@ -1,7 +1,5 @@
 import React from 'react';
 
-const Myself = () => {
+export default function Myself() {
   return <div className="">my</div>;
-};
-
-export default Myself;
+}

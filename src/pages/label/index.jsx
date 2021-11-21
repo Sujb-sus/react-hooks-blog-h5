@@ -1,7 +1,5 @@
 import React from 'react';
 
-const Label = () => {
+export default function Label() {
   return <div className="">label</div>;
-};
-
-export default Label;
+}

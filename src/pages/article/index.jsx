@@ -1,7 +1,3 @@
-import React from 'react';
-
-const Article = () => {
+export default function Article() {
   return <div className="">article</div>;
-};
-
-export default Article;
+}
