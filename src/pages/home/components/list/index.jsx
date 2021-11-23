@@ -1,46 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { InfiniteScroll, PullToRefresh } from 'antd-mobile';
 import SvgIcon from '@/components/svgIcon';
 import NoData from '@/components/noData';
+import ListItem from '../listItem';
+import { apiGetBlogList } from '@/api/blog';
+import base from '@/utils/base';
 import './list.scss';
 
 export default function List() {
+  let [list, setList] = useState([]);
+  let [pageindex, setPageindex] = useState(1);
+  let [hasMore, setHasMore] = useState(false);
+  let pagesize = 10;
+
+  useEffect(() => {
+    getBlogList(pageindex === 1);
+  }, [pageindex]);
+
+  // 获取文章列表
+  const getBlogList = (reload = true) => {
+    reload && base.showLoading();
+    return apiGetBlogList({
+      pageindex,
+      pagesize,
+    })
+      .then((res) => {
+        if (pageindex === 1) {
+          setList(res?.data?.list);
+        } else {
+          setList(list.concat(res?.data?.list));
+        }
+        setHasMore(pageindex * pagesize < res?.data?.total);
+      })
+      .catch((err) => console.log('err', err))
+      .finally(() => {
+        reload && base.hideLoading();
+      });
+  };
+  // 下拉刷新
+  const handlePullToRefresh = () => {
+    setPageindex(1);
+  };
+  // 滚动加载
+  const handleLoadMore = () => {
+    setPageindex(pageindex + 1);
+  };
+
   return (
     <>
       <div className="list-container">
         <div className="list-title">
-          <SvgIcon name="icon-label01"></SvgIcon>
+          <SvgIcon name="icon-label01" />
           <span>最新文章</span>
         </div>
-        <div className="list-item">
-          <div className="item-content">
-            <img src="" alt="" />
-            <div className="content-box">
-              <div className="content-top">
-                <div className="content-title">{'wall'}</div>
-                <div className="content-desc">{'descdescdescdescdescdesc'}</div>
-              </div>
-              <div className="content-label">
-                <div className="label-text">{'label'}</div>
-              </div>
-            </div>
-          </div>
-          <div className="item-footer">
-            <div className="footer-item">
-              <SvgIcon name="icon-date02"></SvgIcon>
-              <div className="footer-text">{'2020 - 11 - 01'}</div>
-            </div>
-            <div className="footer-item">
-              <SvgIcon name="icon-browse02"></SvgIcon>
-              <div className="footer-text">{100}</div>
-            </div>
-            <div className="footer-item">
-              <SvgIcon name="icon-like02"></SvgIcon>
-              <div className="footer-text">{99}</div>
-            </div>
-          </div>
-        </div>
-
-        <NoData></NoData>
+        <PullToRefresh onRefresh={handlePullToRefresh}>
+          {list.length ? (
+            list.map((item) => <ListItem item={item} key={item._id} />)
+          ) : (
+            <NoData />
+          )}
+          <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore} />
+        </PullToRefresh>
       </div>
     </>
   );

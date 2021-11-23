@@ -33,6 +33,7 @@ function checkCode(res) {
   }
   return res;
 }
+const prefix = '/client_api';
 
 function get(url, params) {
   return axios({
@@ -55,8 +56,6 @@ function post(url, data) {
     .then(checkStatus)
     .then(checkCode);
 }
-
-const prefix = '/client_api';
 
 export default {
   get,
