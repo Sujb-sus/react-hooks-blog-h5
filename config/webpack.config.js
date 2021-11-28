@@ -111,7 +111,6 @@ module.exports = function (webpackEnv) {
             }),
             postcssNormalize(),
             px2rem({ remUnit: 37.5 }),
-            // px2rem({ remUnit: 37.5, exclude: '/node_modules|floder_name/i' }),
           ],
           sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
         },

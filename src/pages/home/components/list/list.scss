@@ -1,5 +1,8 @@
 .list-container {
   min-height: calc(100vh - 150px);
+  .adm-pull-to-refresh-head-content {
+    font-size: 12px;
+  }
   .list-title {
     padding: 12px 0 8px 16px;
     display: flex;

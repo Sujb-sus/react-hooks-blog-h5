@@ -7,9 +7,10 @@ import { apiGetBlogList } from '@/api/blog';
 import base from '@/utils/base';
 import './list.scss';
 
-export default function List() {
+export default function List(props) {
   let [list, setList] = useState([]);
   let [pageindex, setPageindex] = useState(1);
+  let [total, setTotal] = useState(0);
   let [hasMore, setHasMore] = useState(false);
   let pagesize = 10;
 
@@ -17,12 +18,18 @@ export default function List() {
     getBlogList(pageindex === 1);
   }, [pageindex]);
 
+  useEffect(() => {
+    console.log('props.params', props.params);
+    setPageindex(1);
+  }, [props.params]);
+
   // 获取文章列表
   const getBlogList = (reload = true) => {
     reload && base.showLoading();
     return apiGetBlogList({
       pageindex,
       pagesize,
+      ...props.params,
     })
       .then((res) => {
         if (pageindex === 1) {
@@ -30,6 +37,7 @@ export default function List() {
         } else {
           setList(list.concat(res?.data?.list));
         }
+        setTotal(res?.data?.total);
         setHasMore(pageindex * pagesize < res?.data?.total);
       })
       .catch((err) => console.log('err', err))
@@ -49,10 +57,13 @@ export default function List() {
   return (
     <>
       <div className="list-container">
-        <div className="list-title">
-          <SvgIcon name="icon-label01" />
-          <span>最新文章</span>
-        </div>
+        {props.showTitle && (
+          <div className="list-title">
+            <SvgIcon name="icon-label01" />
+            <span>最新文章({total})</span>
+          </div>
+        )}
+
         <PullToRefresh onRefresh={handlePullToRefresh}>
           {list.length ? (
             list.map((item) => <ListItem item={item} key={item._id} />)

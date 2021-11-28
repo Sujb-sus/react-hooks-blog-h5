@@ -11,7 +11,14 @@ function showLoading() {
 function hideLoading() {
   Toast.clear();
 }
+
+function toast(content) {
+  Toast.show({
+    content,
+  });
+}
 export default {
+  toast,
   showLoading,
   hideLoading,
 };

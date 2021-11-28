@@ -1,8 +1,12 @@
 import SvgIcon from '@/components/svgIcon';
 import { formatTime, formatNumber } from '@/utils/filter';
+import { apiUpdateLikes } from '@/api/blog';
+import useClickLikes from '@/useHooks/useClickLikes';
 
 export default function ListItem(props) {
   let { item } = props;
+  let { getLikesNumber, getLikesColor, handleLikes } =
+    useClickLikes(apiUpdateLikes);
   return (
     <>
       <div className="list-item">
@@ -27,9 +31,15 @@ export default function ListItem(props) {
             <SvgIcon name="icon-browse02" />
             <div className="footer-text">{formatNumber(item.pv)}</div>
           </div>
-          <div className="footer-item">
+          <div
+            className={`footer-item ${
+              getLikesColor(item._id) ? 'icon-likes' : ''
+            }`}
+            onClick={() => handleLikes(item._id)}>
             <SvgIcon name="icon-like02" />
-            <div className="footer-text">{formatNumber(item.likes)}</div>
+            <div className="footer-text">
+              {formatNumber(getLikesNumber(item._id, item.likes))}
+            </div>
           </div>
         </div>
       </div>
