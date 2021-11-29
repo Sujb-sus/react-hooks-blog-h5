@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { InfiniteScroll, PullToRefresh } from 'antd-mobile';
+import { Link } from 'react-router-dom';
 import SvgIcon from '@/components/svgIcon';
 import NoData from '@/components/noData';
 import ListItem from '../listItem';
@@ -66,7 +67,11 @@ export default function List(props) {
 
       <PullToRefresh onRefresh={handlePullToRefresh}>
         {list.length > 0 ? (
-          list.map((item) => <ListItem item={item} key={item._id} />)
+          list.map((item) => (
+            <Link to={`/article/detail/${item._id}`}>
+              <ListItem item={item} key={item._id} />
+            </Link>
+          ))
         ) : (
           <NoData />
         )}
