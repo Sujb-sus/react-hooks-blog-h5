@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Tabs, Search } from 'antd-mobile';
 import List from '../home/components/list';
+import './label.scss';
+
 export default function Label() {
   const tabList = [
     { title: '全部', key: '' },
@@ -21,17 +23,17 @@ export default function Label() {
     setParams({ ...params });
   };
 
-  const searchRef = useRef(null);
   const handleSearch = (keyword) => {
     console.log('keyword', keyword);
     params.keyword = keyword;
     setParams({ ...params });
   };
   return (
-    <>
+    <div className="app-container">
       <Search
-        placeholder="请输入内容"
-        ref={searchRef}
+        placeholder="请输入搜索关键词"
+        showCancelButton
+        clearOnCancel
         onSearch={handleSearch}
         onCancel={handleSearch}
       />
@@ -45,7 +47,7 @@ export default function Label() {
           <Tabs.Tab title={item.title} key={item.key} />
         ))}
       </Tabs>
-      <List showTitle={false} params={params}></List>
-    </>
+      <List hideTitle={true} params={params}></List>
+    </div>
   );
 }

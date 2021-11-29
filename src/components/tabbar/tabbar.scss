@@ -6,4 +6,7 @@
   background-color: #fff;
   z-index: 99;
   border-top: 1px solid $baseLineColor;
+  .adm-tab-bar-item-active {
+    color: #009688;
+  }
 }

@@ -1,0 +1,29 @@
+.adm-search {
+  padding: 12px 16px 0;
+  .adm-search-input-box {
+    border-radius: 32px;
+  }
+  .adm-search-suffix {
+    color: $mainColor;
+    font-size: 14px;
+  }
+}
+.adm-tabs {
+  .adm-tabs-header {
+    border-bottom-color: #f0f0f0;
+    .adm-tabs-tab-list {
+      .adm-tabs-tab-line {
+        color: #009688;
+        background: #009688;
+      }
+      .adm-tabs-tab-wrapper {
+        .adm-tabs-tab {
+          font-size: 14px;
+        }
+        .adm-tabs-tab-active {
+          color: #009688;
+        }
+      }
+    }
+  }
+}

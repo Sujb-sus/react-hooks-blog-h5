@@ -19,8 +19,9 @@ export default function List(props) {
   }, [pageindex]);
 
   useEffect(() => {
-    console.log('props.params', props.params);
-    setPageindex(1);
+    if (props.params) {
+      pageindex === 1 ? getBlogList(true) : setPageindex(1);
+    }
   }, [props.params]);
 
   // 获取文章列表
@@ -55,24 +56,24 @@ export default function List(props) {
   };
 
   return (
-    <>
-      <div className="list-container">
-        {props.showTitle && (
-          <div className="list-title">
-            <SvgIcon name="icon-label01" />
-            <span>最新文章({total})</span>
-          </div>
-        )}
+    <div className="list-container">
+      {!props.hideTitle && (
+        <div className="list-title">
+          <SvgIcon name="icon-label01" />
+          <span>最新文章({total})</span>
+        </div>
+      )}
 
-        <PullToRefresh onRefresh={handlePullToRefresh}>
-          {list.length ? (
-            list.map((item) => <ListItem item={item} key={item._id} />)
-          ) : (
-            <NoData />
-          )}
+      <PullToRefresh onRefresh={handlePullToRefresh}>
+        {list.length > 0 ? (
+          list.map((item) => <ListItem item={item} key={item._id} />)
+        ) : (
+          <NoData />
+        )}
+        {list.length > 0 && (
           <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore} />
-        </PullToRefresh>
-      </div>
-    </>
+        )}
+      </PullToRefresh>
+    </div>
   );
 }
