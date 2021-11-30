@@ -1,0 +1,55 @@
+.detail-content {
+  background-color: #fff;
+  padding: 16px;
+  padding-bottom: 24px;
+  .detail-body {
+    .detail-title {
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      color: $strongFontColor;
+    }
+    .detail-func {
+      @include flex();
+      padding: 16px 0;
+      position: relative;
+      &::after {
+        @include borderZeroPointFive();
+      }
+      .func-icon {
+        color: $subFontColor;
+        display: flex;
+        align-items: center;
+        margin-right: 24px;
+        .box-text {
+          padding-left: 6px;
+          position: relative;
+          top: 1px;
+          font-size: 14px;
+        }
+      }
+    }
+    .detail-main {
+      padding: 12px 0;
+    }
+    .detail-label {
+      display: flex;
+      align-items: center;
+      color: $subFontColor;
+      font-size: 14px;
+      .box-text {
+        padding-left: 6px;
+        position: relative;
+        top: 2px;
+      }
+      .label-text {
+        padding: 4px 10px;
+        color: #fff;
+        margin-left: 8px;
+        border-radius: 12px;
+        font-size: 14px;
+        top: 0;
+      }
+    }
+  }
+}
