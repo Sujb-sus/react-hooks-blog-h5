@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tabs, Search } from 'antd-mobile';
 import List from '../home/components/list';
+import LabelSelect from './components/labelSelect';
 import './label.scss';
 
 export default function Label() {
@@ -17,17 +18,17 @@ export default function Label() {
     type: '',
     isMobile: true,
   });
-  // 点击tab
-  const handleChange = (key) => {
+  // 切换tab
+  const handleChangeTab = (key) => {
     params.sortBy = key;
     setParams({ ...params });
   };
-
+  // 搜索内容
   const handleSearch = (keyword) => {
-    console.log('keyword', keyword);
     params.keyword = keyword;
     setParams({ ...params });
   };
+
   return (
     <div className="app-container">
       <Search
@@ -38,8 +39,10 @@ export default function Label() {
         onCancel={handleSearch}
       />
 
+      <LabelSelect params={params} setParams={setParams} />
+
       <Tabs
-        onChange={handleChange}
+        onChange={handleChangeTab}
         style={{
           '--title-font-size': '14px',
         }}>

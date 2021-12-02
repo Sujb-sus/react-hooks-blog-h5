@@ -6,8 +6,11 @@ import base from '@/utils/base';
 import './article.scss';
 import '@/styles/markdown/index.scss';
 import { useParams } from 'react-router-dom';
+import useGetLabelColor from '@/useHooks/useGetLabelColor';
 
 export default function Article() {
+  let { getLabelColor } = useGetLabelColor();
+
   let params = useParams();
   let id = params.id;
   let [detail, setDetail] = useState(null);
@@ -62,17 +65,17 @@ export default function Article() {
             dangerouslySetInnerHTML={{
               __html: detail.html.replace(/<a /gi, `<a target='_blank'`),
             }}></div>
-          {/* <div className="detail-label">
-        标签：
-        <div
-          className="box-text label-text"
-          :style="{ backgroundColor: getLabelColor(label) }"
-          v-for="label in detail.type"
-          :key="label"
-        >
-          { label }
-        </div>
-      </div> */}
+          <div className="detail-label">
+            标签：
+            {detail.type.map((label) => (
+              <div
+                className="box-text label-text"
+                style={{ backgroundColor: getLabelColor(label) }}
+                key={label}>
+                {label}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     )

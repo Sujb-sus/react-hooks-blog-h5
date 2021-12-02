@@ -14,11 +14,11 @@ export default function List(props) {
   let [total, setTotal] = useState(0);
   let [hasMore, setHasMore] = useState(false);
   let pagesize = 10;
-
+  // 分页加载文章数据
   useEffect(() => {
     getBlogList(pageindex === 1);
   }, [pageindex]);
-
+  // 作为子组件接收参数，刷新列表
   useEffect(() => {
     if (props.params) {
       pageindex === 1 ? getBlogList(true) : setPageindex(1);

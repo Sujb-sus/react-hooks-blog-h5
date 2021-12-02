@@ -2,11 +2,14 @@ import SvgIcon from '@/components/svgIcon';
 import { formatTime, formatNumber } from '@/utils/filter';
 import { apiUpdateLikes } from '@/api/blog';
 import useClickLikes from '@/useHooks/useClickLikes';
+import useGetLabelColor from '@/useHooks/useGetLabelColor';
 
 export default function ListItem(props) {
   let { item } = props;
   let { getLikesNumber, getLikesColor, handleLikes } =
     useClickLikes(apiUpdateLikes);
+  let { getLabelColor } = useGetLabelColor();
+
   return (
     <>
       <div className="list-item">
@@ -18,7 +21,14 @@ export default function ListItem(props) {
               <div className="content-desc">{item.desc}</div>
             </div>
             <div className="content-label">
-              {/* <div className="label-text">{item.type}</div> */}
+              {item.type.map((label) => (
+                <div
+                  className="label-text"
+                  style={{ backgroundColor: getLabelColor(label) }}
+                  key={label}>
+                  {label}
+                </div>
+              ))}
             </div>
           </div>
         </div>
