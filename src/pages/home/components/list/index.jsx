@@ -68,8 +68,8 @@ export default function List(props) {
       <PullToRefresh onRefresh={handlePullToRefresh}>
         {list.length > 0 ? (
           list.map((item) => (
-            <Link to={`/article/detail/${item._id}`}>
-              <ListItem item={item} key={item._id} />
+            <Link to={`/article/detail/${item._id}`} key={item._id}>
+              <ListItem item={item} />
             </Link>
           ))
         ) : (

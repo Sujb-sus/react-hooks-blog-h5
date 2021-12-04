@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AppOutline,
   FillinOutline,
@@ -11,30 +10,31 @@ import { Outlet } from 'react-router-dom';
 import './tabbar.scss';
 
 export default function FixedBottomNavigation() {
-  let [key, setKey] = useState('/home');
   const navigate = useNavigate();
-  useEffect(() => {
-    navigate(key);
-  }, [key]);
+  const location = useLocation();
+  const { pathname } = location;
+  const setRouteActive = (path) => {
+    navigate(path);
+  };
 
   const tabs = [
     {
-      key: '/home',
+      path: '/home',
       title: '首页',
       icon: <AppOutline />,
     },
     {
-      key: '/label',
+      path: '/label',
       title: '标签',
       icon: <TagOutline />,
     },
     {
-      key: '/message',
+      path: '/message',
       title: '留言',
       icon: <FillinOutline />,
     },
     {
-      key: '/myself',
+      path: '/myself',
       title: '关于我',
       icon: <UserOutline />,
     },
@@ -44,12 +44,12 @@ export default function FixedBottomNavigation() {
       <Outlet />
       <TabBar
         className="tabbar-footer btm-btn-bar-ipx"
-        activeKey={key}
-        onChange={(newKey) => {
-          setKey(newKey);
+        activeKey={pathname}
+        onChange={(value) => {
+          setRouteActive(value);
         }}>
         {tabs.map((item) => (
-          <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+          <TabBar.Item key={item.path} icon={item.icon} title={item.title} />
         ))}
       </TabBar>
     </>
