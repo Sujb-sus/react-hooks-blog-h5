@@ -1,0 +1,69 @@
+.comment-item {
+  position: relative;
+  &::after {
+    @include borderZeroPointFive(16px, 0, calc(100vw - 32px));
+  }
+  .comment-part {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 16px 8px;
+    position: relative;
+    .item-img {
+      display: flex;
+      padding-right: 16px;
+      svg {
+        font-size: 36px;
+      }
+    }
+    .item-box {
+      flex: 1;
+      .box-title {
+        color: $baseFontColor;
+        font-size: 14px;
+        font-weight: bold;
+        span {
+          font-size: 12px;
+          color: $disableFontColor;
+          font-weight: 500;
+        }
+      }
+      .box-content {
+        font-size: 14px;
+        color: $subFontColor;
+        line-height: 24px;
+        margin-top: 4px;
+      }
+      .item-icon {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .box-icon {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          color: $subFontColor;
+          min-width: 90px;
+          span {
+            font-size: 16px;
+            margin-left: 6px;
+          }
+        }
+        .box-reply {
+          span {
+            &:last-child {
+              margin-left: 2px;
+              position: relative;
+              top: 1px;
+            }
+          }
+        }
+        .icon-likes {
+          color: $warningColor;
+        }
+      }
+    }
+  }
+}
+.reply-list {
+  padding-bottom: 10px;
+}

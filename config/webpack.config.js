@@ -110,7 +110,7 @@ module.exports = function (webpackEnv) {
               stage: 3,
             }),
             postcssNormalize(),
-            px2rem({ remUnit: 37.5 }),
+            px2rem({ remUnit: 37.5, exclude: /node_modules/i }),
           ],
           sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
         },

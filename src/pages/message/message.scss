@@ -1,0 +1,21 @@
+.comment-list {
+  margin: 0 auto;
+  .side-title {
+    font-size: 14px;
+    padding-bottom: 10px;
+    padding-left: 16px;
+    color: $strongFontColor;
+    position: relative;
+    &::after {
+      @include borderZeroPointFive(16px, 0, calc(100vw - 32px), $warningColor);
+    }
+    svg {
+      margin-right: 4px;
+      font-size: 18px;
+    }
+    span {
+      color: $warningColor;
+      margin-right: 4px;
+    }
+  }
+}

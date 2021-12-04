@@ -1,0 +1,41 @@
+.edit-container {
+  padding-bottom: 12px;
+  .content-input {
+    border: 1px solid $baseBorderColor;
+    margin: 10px 16px;
+    padding: 4px 12px;
+    textarea {
+      color: $strongFontColor;
+      &::placeholder {
+        color: $subFontColor;
+        font-size: 14px;
+      }
+    }
+    .adm-text-area-count {
+      font-size: 14px;
+    }
+  }
+  .edit-footer {
+    @include flex(flex-end);
+    padding-right: 16px;
+    .edit-name {
+      width: 160px;
+      border: 1px solid $baseBorderColor;
+      border-radius: 12px;
+      margin-right: 16px;
+      input {
+        color: $strongFontColor;
+        padding-left: 10px;
+      }
+    }
+    button {
+      border: none;
+      padding: 2px 10px;
+      background-color: $baseLinkColor;
+      color: #fff;
+      font-size: 14px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+  }
+}

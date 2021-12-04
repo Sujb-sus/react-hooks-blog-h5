@@ -12,7 +12,8 @@ export default function List(props) {
   let [list, setList] = useState([]);
   let [pageindex, setPageindex] = useState(1);
   let [total, setTotal] = useState(0);
-  let [hasMore, setHasMore] = useState(false);
+  let [hasMore, setHasMore] = useState(true);
+  let [hasFirst, setHasFirst] = useState(true);
   let pagesize = 10;
   // 分页加载文章数据
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function List(props) {
   }, [pageindex]);
   // 作为子组件接收参数，刷新列表
   useEffect(() => {
-    if (props.params) {
+    if (props.params && !hasFirst) {
       pageindex === 1 ? getBlogList(true) : setPageindex(1);
     }
   }, [props.params]);
@@ -35,6 +36,7 @@ export default function List(props) {
     })
       .then((res) => {
         if (pageindex === 1) {
+          setHasFirst(false);
           setList(res?.data?.list);
         } else {
           setList(list.concat(res?.data?.list));
@@ -47,14 +49,6 @@ export default function List(props) {
         reload && base.hideLoading();
       });
   };
-  // 下拉刷新
-  const handlePullToRefresh = () => {
-    setPageindex(1);
-  };
-  // 滚动加载
-  const handleLoadMore = () => {
-    setPageindex(pageindex + 1);
-  };
 
   return (
     <div className="list-container">
@@ -65,7 +59,7 @@ export default function List(props) {
         </div>
       )}
 
-      <PullToRefresh onRefresh={handlePullToRefresh}>
+      <PullToRefresh onRefresh={() => setPageindex(1)}>
         {list.length > 0 ? (
           list.map((item) => (
             <Link to={`/article/detail/${item._id}`} key={item._id}>
@@ -76,7 +70,10 @@ export default function List(props) {
           <NoData />
         )}
         {list.length > 0 && (
-          <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore} />
+          <InfiniteScroll
+            loadMore={() => setPageindex(pageindex + 1)}
+            hasMore={hasMore}
+          />
         )}
       </PullToRefresh>
     </div>
