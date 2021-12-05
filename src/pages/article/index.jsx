@@ -10,11 +10,11 @@ import useGetLabelColor from '@/useHooks/useGetLabelColor';
 import useGetLabelList from '@/useHooks/useGetLabelList';
 
 const Article = () => {
+  useGetLabelList();
   let { getLabelColor } = useGetLabelColor();
   let params = useParams();
   let id = params.id;
   let [detail, setDetail] = useState(null);
-  useGetLabelList();
 
   useEffect(async () => {
     base.showLoading();
@@ -22,7 +22,6 @@ const Article = () => {
     await getBlogDetail();
     base.hideLoading();
   }, []);
-
   // 获取文章详情
   const getBlogDetail = () => {
     return apiGetBlogDetail({ _id: id })
@@ -38,6 +37,7 @@ const Article = () => {
       .then(() => {})
       .catch((err) => console.log(err));
   };
+
   return (
     detail && (
       <div className="detail-content">

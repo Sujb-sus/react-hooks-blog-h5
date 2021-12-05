@@ -3,7 +3,8 @@ import { formatTime } from '@/utils/filter';
 import './replyItem.scss';
 
 const ReplyItem = (props) => {
-  const { replyItem } = props;
+  let { replyItem } = props;
+
   return (
     <div className="reply-item">
       <div className="item-img" style={{ color: replyItem.replyHeaderColor }}>

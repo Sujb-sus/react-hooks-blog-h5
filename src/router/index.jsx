@@ -1,14 +1,14 @@
 import { lazy, Suspense } from 'react';
 import { Loading } from 'antd-mobile';
 import { useRoutes } from 'react-router-dom';
-
 import Tabbar from '@/components/tabbar';
-import Article from '@/pages/article';
+
 const Home = lazy(() => import('@/pages/home'));
 const Label = lazy(() => import('@/pages/label'));
 const Message = lazy(() => import('@/pages/message'));
 const Myself = lazy(() => import('@/pages/myself'));
-
+const Article = lazy(() => import('@/pages/article'));
+// 路由懒加载，需配合Suspense使用
 const lazyLoad = (children) => {
   return <Suspense fallback={<Loading />}>{children}</Suspense>;
 };
@@ -37,7 +37,7 @@ const AppRouter = () => {
         },
       ],
     },
-    { path: '/article/detail/:id', element: <Article /> },
+    { path: '/article/detail/:id', element: lazyLoad(<Article />) },
   ]);
 };
 

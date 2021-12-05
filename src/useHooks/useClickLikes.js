@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import base from '@/utils/base';
 
-export default function useClickLike(requestApi) {
+const useClickLike = (requestApi) => {
   let [currentId, setCurrentId] = useState(''); // 当前id
   let [isLike, setIsLike] = useState(false); // 是否点赞
   let [isLikeSuccess, setIsLikeSuccess] = useState(true); // 是否点赞
   let [likeList, setLikeList] = useState([]); // 当前点赞列表
+
   // 获取点赞数
   const getLikesNumber = useCallback(
     (id, likes) => (isLikeSuccess && likeList.includes(id) ? likes + 1 : likes),
@@ -25,7 +26,7 @@ export default function useClickLike(requestApi) {
       });
     }
   }, [currentId, isLike]);
-
+  // 点赞事件
   const handleLikes = (id) => {
     if (likeList.includes(id)) {
       setIsLike(true);
@@ -44,4 +45,5 @@ export default function useClickLike(requestApi) {
     getLikesColor,
     handleLikes,
   };
-}
+};
+export default useClickLike;

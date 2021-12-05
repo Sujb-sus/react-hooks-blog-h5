@@ -1,7 +1,7 @@
 import React from 'react';
 
 const SvgIcon = (prop) => {
-  const iconName = `#${prop.name}`;
+  let iconName = `#${prop.name}`;
   return (
     <svg className="icon" aria-hidden="true">
       <use xlinkHref={iconName}></use>

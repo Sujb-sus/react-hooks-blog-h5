@@ -15,7 +15,7 @@ axios.interceptors.response.use(
 );
 
 // 检查状态码
-function checkStatus(res) {
+const checkStatus = (res) => {
   if (res.status === 200 || res.status === 304) {
     return res.data;
   }
@@ -24,18 +24,18 @@ function checkStatus(res) {
     msg: res.statusText,
     data: res.statusText,
   };
-}
+};
 
 // 检查CODE值
-function checkCode(res) {
+const checkCode = (res) => {
   if (res.code === 0) {
     throw new Error(res.msg);
   }
   return res;
-}
+};
 const prefix = '/client_api';
 
-function get(url, params) {
+const get = (url, params) => {
   return axios({
     method: 'get',
     url: prefix + url,
@@ -44,9 +44,9 @@ function get(url, params) {
   })
     .then(checkStatus)
     .then(checkCode);
-}
+};
 
-function post(url, data) {
+const post = (url, data) => {
   return axios({
     method: 'post',
     url: prefix + url,
@@ -55,7 +55,7 @@ function post(url, data) {
   })
     .then(checkStatus)
     .then(checkCode);
-}
+};
 
 export default {
   get,

@@ -8,14 +8,14 @@ import ReplyItem from '../replyItem';
 import './commentItem.scss';
 
 const CommentItem = (props) => {
-  const { commentItem, initData } = props;
-  const { getLikesNumber, getLikesColor, handleLikes } =
+  let { commentItem, setPageindex } = props;
+  let { getLikesNumber, getLikesColor, handleLikes } =
     useClickLikes(apiUpdateLikes);
   let [isEdit, setIsEdit] = useState(false);
   let [currentId, setCurrentId] = useState('');
   let [byReplyUser, setByReplyUser] = useState('');
-  const editorRef = useRef();
-  const colorList = [
+  let editorRef = useRef();
+  let colorList = [
     '#EB6841',
     '#3FB8AF',
     '#464646',
@@ -25,13 +25,14 @@ const CommentItem = (props) => {
     '#83AF9B',
     '#036564',
   ];
-  // 点击回复
+
+  // 点击回复事件
   const handleReply = (id, name) => {
     setIsEdit(!isEdit);
     setCurrentId(id);
     setByReplyUser(name);
   };
-  // 添加回复
+  // 添加回复内容
   const addReply = (replyItem) => {
     const params = {
       _id: currentId,
@@ -45,7 +46,7 @@ const CommentItem = (props) => {
       .then(() => {
         editorRef.current.resetData();
         setIsEdit(false);
-        initData();
+        setPageindex(1);
       })
       .catch((err) => console.log(err))
       .finally(() => {});

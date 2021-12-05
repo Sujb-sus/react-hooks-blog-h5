@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-export default function useGetLabelColor() {
-  const labelList = useSelector((state) => state.label);
+const useGetLabelColor = () => {
+  let labelList = useSelector((state) => state.label);
+
+  // 获取标签颜色
   const getLabelColor = useCallback(
     (labelName) => {
       if (labelList.length) {
@@ -22,4 +24,5 @@ export default function useGetLabelColor() {
   return {
     getLabelColor,
   };
-}
+};
+export default useGetLabelColor;

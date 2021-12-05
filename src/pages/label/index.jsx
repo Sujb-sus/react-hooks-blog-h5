@@ -7,7 +7,7 @@ import './label.scss';
 
 const Label = () => {
   useGetLabelList();
-  const tabList = [
+  let tabList = [
     { title: '全部', key: '' },
     { title: '推荐', key: 'level' },
     { title: '最新', key: 'releaseTime' },
@@ -20,12 +20,13 @@ const Label = () => {
     type: '',
     isMobile: true,
   });
-  // 切换tab
+
+  // 切换tab事件
   const handleChangeTab = (key) => {
     params.sortBy = key;
     setParams({ ...params });
   };
-  // 搜索内容
+  // 搜索内容事件
   const handleSearch = (keyword) => {
     params.keyword = keyword;
     setParams({ ...params });

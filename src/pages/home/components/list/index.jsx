@@ -11,47 +11,43 @@ import './list.scss';
 const List = (props) => {
   let [list, setList] = useState([]);
   let [pageindex, setPageindex] = useState(1);
-  let [total, setTotal] = useState(0);
-  let [hasMore, setHasMore] = useState(true);
-  let [hasFirst, setHasFirst] = useState(true);
+  let [total, setTotal] = useState(-1);
+  let [hasMore, setHasMore] = useState(false);
+  let [isFirst, setIsFirst] = useState(true); // 是否首次加载
   let pagesize = 10;
-  // 分页加载文章数据
+
+  // 兼容label页传值场景
   useEffect(() => {
-    getBlogList(pageindex === 1);
+    pageindex === 1 && handleLoadMore();
   }, [pageindex]);
-  // 作为子组件接收参数，刷新列表
+  // 监听label页传下来的值，重新更新列表
   useEffect(() => {
-    if (props.params && !hasFirst) {
-      pageindex === 1 ? getBlogList(true) : setPageindex(1);
+    if (!isFirst && props.params) {
+      pageindex === 1 ? handleLoadMore() : setPageindex(1);
     }
   }, [props.params]);
-
-  // 获取文章列表
-  const getBlogList = (reload = true) => {
-    reload && base.showLoading();
-    return apiGetBlogList({
-      pageindex,
-      pagesize,
-      ...props.params,
-    })
-      .then((res) => {
-        if (pageindex === 1) {
-          setHasFirst(false);
-          setList(res?.data?.list);
-        } else {
-          setList(list.concat(res?.data?.list));
-        }
-        setTotal(res?.data?.total);
-        setHasMore(pageindex * pagesize < res?.data?.total);
-      })
-      .catch((err) => console.log('err', err))
-      .finally(() => {
-        reload && base.hideLoading();
+  // 滚动加载文章列表
+  const handleLoadMore = async (reload = true) => {
+    try {
+      reload && base.showLoading();
+      const res = await apiGetBlogList({
+        pageindex,
+        pagesize,
+        ...props.params,
       });
+      reload && base.hideLoading();
+      setIsFirst(false);
+      pageindex === 1
+        ? setList(res?.data?.list)
+        : setList((val) => [...val, ...res?.data?.list]);
+      setTotal(res?.data?.total);
+      setHasMore(pageindex * pagesize < res?.data?.total);
+      setPageindex(pageindex + 1);
+    } catch (error) {
+      console.log('error', error);
+    }
   };
-  const handleLoadMore = async () => {
-    setPageindex(pageindex + 1);
-  };
+
   return (
     <div className="list-container">
       {!props.hideTitle && (
@@ -62,19 +58,18 @@ const List = (props) => {
       )}
 
       <PullToRefresh onRefresh={() => setPageindex(1)}>
-        {list.length > 0 ? (
+        {total > 0 &&
           list.map((item) => (
             <Link to={`/article/detail/${item._id}`} key={item._id}>
               <ListItem item={item} />
             </Link>
-          ))
-        ) : (
-          <NoData />
-        )}
-        {list.length > 0 && (
-          <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore} />
-        )}
+          ))}
+        <InfiniteScroll
+          loadMore={() => handleLoadMore(false)}
+          hasMore={hasMore}
+        />
       </PullToRefresh>
+      {!total && <NoData />}
     </div>
   );
 };

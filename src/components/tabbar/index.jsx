@@ -11,14 +11,7 @@ import { Outlet } from 'react-router-dom';
 import './tabbar.scss';
 
 const FixedBottomNavigation = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { pathname } = location;
-  const setRouteActive = (path) => {
-    navigate(path);
-  };
-
-  const tabs = [
+  let tabs = [
     {
       path: '/home',
       title: '首页',
@@ -40,6 +33,14 @@ const FixedBottomNavigation = () => {
       icon: <UserOutline />,
     },
   ];
+  let navigate = useNavigate();
+  let location = useLocation();
+  let { pathname } = location;
+
+  // 路由跳转
+  const setRouteActive = (path) => {
+    navigate(path);
+  };
   return (
     <>
       <Outlet />

@@ -4,10 +4,11 @@ import './labelSelect.scss';
 
 const LabelSelect = (props) => {
   let { params, setParams } = props;
-  const labelList = useSelector((state) => state.label);
+  let labelList = useSelector((state) => state.label);
   let [activeIndex, setActiveIndex] = useState(-1);
   let [labelName, setLabelName] = useState('');
 
+  // 选择label类型
   const handleLabel = (index, label) => {
     let name = activeIndex === index && labelName ? '' : label;
     setActiveIndex(index);
@@ -15,6 +16,7 @@ const LabelSelect = (props) => {
     params.type = name;
     setParams({ ...params });
   };
+
   return (
     <div className="label-body">
       <div className="label-box">

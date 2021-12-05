@@ -1,22 +1,23 @@
 import { Toast } from 'antd-mobile';
 
-function showLoading() {
+const showLoading = () => {
   Toast.show({
     maskClickable: false,
     duration: 0,
     icon: 'loading',
+    content: '加载中...',
   });
-}
+};
 
-function hideLoading() {
+const hideLoading = () => {
   Toast.clear();
-}
+};
 
-function toast(content) {
+const toast = (content) => {
   Toast.show({
     content,
   });
-}
+};
 export default {
   toast,
   showLoading,

@@ -1,8 +1,8 @@
 import { SET_LABEL_LIST } from '../constant';
 
 const initState = [];
-
-export default function label(preState = initState, action) {
+// 存储label数据
+const label = (preState = initState, action) => {
   const { type, data } = action;
   switch (type) {
     case SET_LABEL_LIST:
@@ -10,4 +10,5 @@ export default function label(preState = initState, action) {
     default:
       return preState;
   }
-}
+};
+export default label;

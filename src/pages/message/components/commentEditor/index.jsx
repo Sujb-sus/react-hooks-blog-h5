@@ -4,10 +4,10 @@ import { TextArea, Input } from 'antd-mobile';
 import './commentEditor.scss';
 
 const CommentEditor = forwardRef((props, ref) => {
-  const [content, setContent] = useState('');
-  const [nickname, setNickname] = useState('');
-  const { submitSuccess } = props;
-  const colorList = [
+  let [content, setContent] = useState('');
+  let [nickname, setNickname] = useState('');
+  let { submitSuccess } = props;
+  let colorList = [
     '#EB6841',
     '#3FB8AF',
     '#464646',
@@ -17,7 +17,8 @@ const CommentEditor = forwardRef((props, ref) => {
     '#83AF9B',
     '#036564',
   ];
-  // 添加留言
+
+  // 添加留言内容
   const handleSubmit = () => {
     if (!content) {
       base.toast('内容不能为空');
@@ -31,7 +32,7 @@ const CommentEditor = forwardRef((props, ref) => {
     };
     submitSuccess(params);
   };
-  // 重置表单
+  // 重置表单数据
   const resetData = () => {
     setContent('');
     setNickname('');
@@ -40,6 +41,7 @@ const CommentEditor = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     resetData,
   }));
+
   return (
     <div className="edit-container">
       <div className="content-input">
