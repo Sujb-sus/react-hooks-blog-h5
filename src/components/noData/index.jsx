@@ -1,11 +1,10 @@
 import noData from '@/assets/no-data.jpg';
 
-export default function NoData() {
+const NoData = () => {
   return (
-    <>
-      <div className="no-data">
-        <img src={noData} alt="no-data" />
-      </div>
-    </>
+    <div className="no-data">
+      <img src={noData} alt="no-data" />
+    </div>
   );
-}
+};
+export default NoData;

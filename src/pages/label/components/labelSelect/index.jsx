@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import './labelSelect.scss';
 
-export default function LabelSelect(props) {
+const LabelSelect = (props) => {
   let { params, setParams } = props;
   const labelList = useSelector((state) => state.label);
   let [activeIndex, setActiveIndex] = useState(-1);
@@ -35,4 +35,5 @@ export default function LabelSelect(props) {
       </div>
     </div>
   );
-}
+};
+export default LabelSelect;

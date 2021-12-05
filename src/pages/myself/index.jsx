@@ -3,7 +3,7 @@ import avatar from '@/assets/avatar.png';
 import avatarBg from '@/assets/bg4.jpg';
 import './myself.scss';
 
-export default function Myself() {
+const Myself = () => {
   return (
     <div className="app-container">
       <div className="my-bg">
@@ -36,4 +36,5 @@ export default function Myself() {
       </div>
     </div>
   );
-}
+};
+export default Myself;

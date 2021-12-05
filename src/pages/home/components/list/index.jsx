@@ -8,7 +8,7 @@ import { apiGetBlogList } from '@/api/blog';
 import base from '@/utils/base';
 import './list.scss';
 
-export default function List(props) {
+const List = (props) => {
   let [list, setList] = useState([]);
   let [pageindex, setPageindex] = useState(1);
   let [total, setTotal] = useState(0);
@@ -49,7 +49,9 @@ export default function List(props) {
         reload && base.hideLoading();
       });
   };
-
+  const handleLoadMore = async () => {
+    setPageindex(pageindex + 1);
+  };
   return (
     <div className="list-container">
       {!props.hideTitle && (
@@ -70,12 +72,10 @@ export default function List(props) {
           <NoData />
         )}
         {list.length > 0 && (
-          <InfiniteScroll
-            loadMore={() => setPageindex(pageindex + 1)}
-            hasMore={hasMore}
-          />
+          <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore} />
         )}
       </PullToRefresh>
     </div>
   );
-}
+};
+export default List;

@@ -2,7 +2,7 @@ import SvgIcon from '@/components/svgIcon';
 import { formatTime } from '@/utils/filter';
 import './replyItem.scss';
 
-export default function ReplyItem(props) {
+const ReplyItem = (props) => {
   const { replyItem } = props;
   return (
     <div className="reply-item">
@@ -25,4 +25,5 @@ export default function ReplyItem(props) {
       </div>
     </div>
   );
-}
+};
+export default ReplyItem;

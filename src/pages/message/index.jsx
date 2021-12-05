@@ -12,7 +12,7 @@ import base from '@/utils/base';
 import NoData from '@/components/noData';
 import './message.scss';
 
-export default function Message() {
+const Message = () => {
   let [commentList, setCommentList] = useState([]);
   let [pageindex, setPageindex] = useState(1);
   let [total, setTotal] = useState(0);
@@ -97,4 +97,5 @@ export default function Message() {
       </div>
     </div>
   );
-}
+};
+export default Message;

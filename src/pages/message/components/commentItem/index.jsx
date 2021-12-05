@@ -7,7 +7,7 @@ import CommentEditor from '../commentEditor';
 import ReplyItem from '../replyItem';
 import './commentItem.scss';
 
-export default function CommentItem(props) {
+const CommentItem = (props) => {
   const { commentItem, initData } = props;
   const { getLikesNumber, getLikesColor, handleLikes } =
     useClickLikes(apiUpdateLikes);
@@ -104,4 +104,5 @@ export default function CommentItem(props) {
       </div>
     </div>
   );
-}
+};
+export default CommentItem;

@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Tabs, Search } from 'antd-mobile';
 import List from '../home/components/list';
 import LabelSelect from './components/labelSelect';
+import useGetLabelList from '@/useHooks/useGetLabelList';
 import './label.scss';
 
-export default function Label() {
+const Label = () => {
+  useGetLabelList();
   const tabList = [
     { title: '全部', key: '' },
     { title: '推荐', key: 'level' },
@@ -53,4 +55,5 @@ export default function Label() {
       <List hideTitle={true} params={params}></List>
     </div>
   );
-}
+};
+export default Label;

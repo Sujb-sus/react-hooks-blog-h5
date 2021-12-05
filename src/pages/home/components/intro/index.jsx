@@ -3,7 +3,7 @@ import cloudLeft from '@/assets/cloud-left.png';
 import grassConfetti from '@/assets/grass-confetti.png';
 import './intro.scss';
 
-export default function Intro() {
+const Intro = () => {
   return (
     <>
       <div className="intro-container">
@@ -24,4 +24,5 @@ export default function Intro() {
       </div>
     </>
   );
-}
+};
+export default Intro;

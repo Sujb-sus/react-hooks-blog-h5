@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AppOutline,
@@ -9,7 +10,7 @@ import { TabBar } from 'antd-mobile';
 import { Outlet } from 'react-router-dom';
 import './tabbar.scss';
 
-export default function FixedBottomNavigation() {
+const FixedBottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
@@ -54,4 +55,5 @@ export default function FixedBottomNavigation() {
       </TabBar>
     </>
   );
-}
+};
+export default FixedBottomNavigation;

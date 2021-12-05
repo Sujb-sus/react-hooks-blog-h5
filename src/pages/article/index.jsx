@@ -7,13 +7,14 @@ import './article.scss';
 import '@/styles/markdown/index.scss';
 import { useParams } from 'react-router-dom';
 import useGetLabelColor from '@/useHooks/useGetLabelColor';
+import useGetLabelList from '@/useHooks/useGetLabelList';
 
-export default function Article() {
+const Article = () => {
   let { getLabelColor } = useGetLabelColor();
-
   let params = useParams();
   let id = params.id;
   let [detail, setDetail] = useState(null);
+  useGetLabelList();
 
   useEffect(async () => {
     base.showLoading();
@@ -80,4 +81,5 @@ export default function Article() {
       </div>
     )
   );
-}
+};
+export default Article;
