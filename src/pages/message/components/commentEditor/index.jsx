@@ -1,23 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import base from '@/utils/base';
 import { TextArea, Input } from 'antd-mobile';
 import './commentEditor.scss';
 
-export default function CommentEditor() {
+const CommentEditor = forwardRef((props, ref) => {
   const [content, setContent] = useState('');
   const [nickname, setNickname] = useState('');
-  const handleContent = (value) => {
-    setContent(value);
-  };
-  const handleNickname = (value) => {
-    setNickname(value);
-  };
+  const { submitSuccess } = props;
+  const colorList = [
+    '#EB6841',
+    '#3FB8AF',
+    '#464646',
+    '#FC9D9A',
+    '#ED8901',
+    '#C8C8A9',
+    '#83AF9B',
+    '#036564',
+  ];
+  // 添加留言
   const handleSubmit = () => {
     if (!content) {
       base.toast('内容不能为空');
       return false;
     }
+    const params = {
+      content: content,
+      nickname: nickname,
+      createTime: new Date().getTime() + '',
+      headerColor: colorList[Math.floor(Math.random() * 7)],
+    };
+    submitSuccess(params);
   };
+  // 重置表单
+  const resetData = () => {
+    setContent('');
+    setNickname('');
+  };
+  // 暴露方法给父组件
+  useImperativeHandle(ref, () => ({
+    resetData,
+  }));
   return (
     <div className="edit-container">
       <div className="content-input">
@@ -27,7 +49,7 @@ export default function CommentEditor() {
           showCount
           maxLength={150}
           placeholder="请在此输入内容..."
-          onChange={(val) => handleContent(val)}
+          onChange={(val) => setContent(val)}
         />
       </div>
       <div className="edit-footer">
@@ -37,10 +59,11 @@ export default function CommentEditor() {
           type="text"
           maxlength="10"
           className="edit-name"
-          onChange={(val) => handleNickname(val)}
+          onChange={(val) => setNickname(val)}
         />
         <button onClick={() => handleSubmit()}>提交</button>
       </div>
     </div>
   );
-}
+});
+export default CommentEditor;

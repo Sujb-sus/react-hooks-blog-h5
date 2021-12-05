@@ -1,17 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { apiUpdateLikes, apiUpdateReplys } from '@/api/message';
 import SvgIcon from '@/components/svgIcon';
 import { formatTime, formatNumber } from '@/utils/filter';
 import useClickLikes from '@/useHooks/useClickLikes';
+import CommentEditor from '../commentEditor';
 import ReplyItem from '../replyItem';
 import './commentItem.scss';
 
 export default function CommentItem(props) {
-  const { commentItem } = props;
-  let { getLikesNumber, getLikesColor, handleLikes } =
+  const { commentItem, initData } = props;
+  const { getLikesNumber, getLikesColor, handleLikes } =
     useClickLikes(apiUpdateLikes);
-  let [hasEdit, setHasEdit] = useState(false);
-  const handleReply = () => {};
+  let [isEdit, setIsEdit] = useState(false);
+  let [currentId, setCurrentId] = useState('');
+  let [byReplyUser, setByReplyUser] = useState('');
+  const editorRef = useRef();
+  const colorList = [
+    '#EB6841',
+    '#3FB8AF',
+    '#464646',
+    '#FC9D9A',
+    '#ED8901',
+    '#C8C8A9',
+    '#83AF9B',
+    '#036564',
+  ];
+  // 点击回复
+  const handleReply = (id, name) => {
+    setIsEdit(!isEdit);
+    setCurrentId(id);
+    setByReplyUser(name);
+  };
+  // 添加回复
+  const addReply = (replyItem) => {
+    const params = {
+      _id: currentId,
+      replyTime: new Date().getTime() + '',
+      replyContent: replyItem.content,
+      replyUser: replyItem.nickname,
+      byReplyUser,
+      replyHeaderColor: colorList[Math.floor(Math.random() * 7)],
+    };
+    return apiUpdateReplys(params)
+      .then(() => {
+        editorRef.current.resetData();
+        setIsEdit(false);
+        initData();
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {});
+  };
 
   return (
     <div className="comment-item">
@@ -48,7 +86,7 @@ export default function CommentItem(props) {
                 handleReply(commentItem._id, commentItem.nickname)
               }>
               <SvgIcon name="icon-reply02"></SvgIcon>
-              <span>{hasEdit ? '取消' : '回复'}</span>
+              <span>{isEdit ? '取消' : '回复'}</span>
               <span>
                 {commentItem.replyList?.length
                   ? commentItem.replyList?.length
@@ -58,11 +96,7 @@ export default function CommentItem(props) {
           </div>
         </div>
       </div>
-      {/* <CommentEditor
-      v-show="isEdit"
-      @submitSuccess="addReply"
-      ref="editorRef"
-    ></CommentEditor> */}
+      {isEdit && <CommentEditor submitSuccess={addReply} ref={editorRef} />}
       <div className="reply-list">
         {commentItem.replyList.map((reply, index) => (
           <ReplyItem replyItem={reply} key={reply._id + index}></ReplyItem>

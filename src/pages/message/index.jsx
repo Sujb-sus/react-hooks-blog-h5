@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SvgIcon from '@/components/svgIcon';
 import CommentItem from './components/commentItem';
 import CommentEditor from './components/commentEditor';
@@ -18,6 +18,7 @@ export default function Message() {
   let [total, setTotal] = useState(0);
   let [replyCount, setReplyCount] = useState(0);
   let [hasMore, setHasMore] = useState(false);
+  let editorRef = useRef();
   let pagesize = 10;
 
   // 分页加载留言数据
@@ -61,6 +62,7 @@ export default function Message() {
     base.showLoading();
     return apiAddMessage(params)
       .then(() => {
+        editorRef.current.resetData();
         initData();
       })
       .catch((err) => console.log(err))
@@ -70,7 +72,7 @@ export default function Message() {
   };
   return (
     <div className="app-container">
-      <CommentEditor />
+      <CommentEditor submitSuccess={addMessage} ref={editorRef} />
       <div className="comment-list">
         <div className="side-title">
           <SvgIcon name="icon-comment"></SvgIcon>
@@ -78,7 +80,10 @@ export default function Message() {
         </div>
         {commentList.length > 0 ? (
           commentList.map((item) => (
-            <CommentItem commentItem={item} key={item._id}></CommentItem>
+            <CommentItem
+              commentItem={item}
+              key={item._id}
+              initData={initData}></CommentItem>
           ))
         ) : (
           <NoData />
