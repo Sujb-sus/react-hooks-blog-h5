@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Loading } from 'antd-mobile';
 import { useRoutes } from 'react-router-dom';
 import Tabbar from '@/components/tabbar';
+import NotFound from '@/components/notFound';
 
 const Home = lazy(() => import('@/pages/home'));
 const Label = lazy(() => import('@/pages/label'));
@@ -17,6 +18,7 @@ const AppRouter = () => {
   return useRoutes([
     {
       path: '/',
+      exact: true,
       element: <Tabbar />,
       children: [
         {
@@ -38,6 +40,7 @@ const AppRouter = () => {
       ],
     },
     { path: '/article/detail/:id', element: lazyLoad(<Article />) },
+    { path: '*', element: <NotFound /> },
   ]);
 };
 

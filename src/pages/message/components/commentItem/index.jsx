@@ -8,12 +8,12 @@ import ReplyItem from '../replyItem';
 import './commentItem.scss';
 
 const CommentItem = (props) => {
-  let { commentItem, setPageindex } = props;
+  let { commentItem, initMessageData } = props;
   let { getLikesNumber, getLikesColor, handleLikes } =
     useClickLikes(apiUpdateLikes);
   let [isEdit, setIsEdit] = useState(false);
-  let [currentId, setCurrentId] = useState('');
-  let [byReplyUser, setByReplyUser] = useState('');
+  let currentId = useRef('');
+  let byReplyUser = useRef('');
   let editorRef = useRef();
   let colorList = [
     '#EB6841',
@@ -28,25 +28,25 @@ const CommentItem = (props) => {
 
   // 点击回复事件
   const handleReply = (id, name) => {
+    currentId.current = id;
+    byReplyUser.current = name;
     setIsEdit(!isEdit);
-    setCurrentId(id);
-    setByReplyUser(name);
   };
   // 添加回复内容
   const addReply = (replyItem) => {
     const params = {
-      _id: currentId,
+      _id: currentId.current,
       replyTime: new Date().getTime() + '',
       replyContent: replyItem.content,
       replyUser: replyItem.nickname,
-      byReplyUser,
+      byReplyUser: currentId.byReplyUser,
       replyHeaderColor: colorList[Math.floor(Math.random() * 7)],
     };
     return apiUpdateReplys(params)
       .then(() => {
         editorRef.current.resetData();
         setIsEdit(false);
-        setPageindex(1);
+        initMessageData();
       })
       .catch((err) => console.log(err))
       .finally(() => {});

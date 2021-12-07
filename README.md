@@ -20,24 +20,24 @@
 
 ### 一、rem 适配
 
-1. 安装插件`yarn add amfe-flexible postcss-px2rem-exclude -S`
+1. 安装插件`yarn add lib-flexible postcss-px2rem-exclude -S`
 
-- `amfe-flexible`是配置可伸缩布局方案，主要是将 1 rem 设为 viewWidth / 10
-- `postcss-px2rem-exclude`插件用于将像素（px）单元生成 rem 单位，且可通过配置`exclude`属性忽略 node_modules 目录下的文件转为 rem 单位
+- `lib-flexible`是配置可伸缩布局方案，主要是将 1 rem 设为 viewWidth / 10
+- `postcss-px2rem-exclude`插件用于将像素（px）单元生成 rem 单位，且可通过配置`exclude`属性忽略 `node_modules`目录下的文件转为 rem 单位
 
-2. 在 index.js 导入`amfe-flexible`
+2. 在`src/index.js`导入`lib-flexible`
 
-```javascript
-import "amfe-flexible";
+```js
+import 'lib-flexible';
 ```
 
-3. 在`config/webpack.config.js`配置`postcss-px2rem-exclude`
+3. 在`config/webpack.config.js`配置 postcss-px2rem-exclude
 
-- 引入`postcss-px2rem-exclude`
+- 引入 postcss-px2rem-exclude
 - 找到`getStyleLoaders`函数配置`postcss-loader`的地方
 - 在`plugins`配置项里添加`px2rem`的配置内容
 
-```javascript
+```js
 const px2rem = require('postcss-px2rem-exclude');
 
 const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -54,8 +54,8 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 }
 ```
 
-- remUnit 属性是根据设计稿宽度除以 10 进行设置，假设设计稿为 375，即 remUnit 设为 37.5
-- exclude 属性是忽略 node_modules 目录下的文件转为 rem
+- `remUnit`属性是根据设计稿宽度除以 10 进行设置，假设设计稿为 375，即 remUnit 设为 37.5
+- `exclude`属性是忽略`node_modules`目录下的文件转为 rem 单位
 
 ### 二、Hooks 运用
 
@@ -65,16 +65,16 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 const [state, setState] = useState(initialState);
 ```
 
-- useState()传入 state 的初始值 initialState
-- 通过数组解构出 state, setState（更新 state 的方法）
+- `useState`传入 state 的初始值`initialState`
+- 通过数组解构出 state,`setState`（更新 state 的方法）
 
 #### 2. useEffect Hook
 
-useEffect Hook 可以让你在函数组件中执行副作用操作。组件里有两种常见副作用操作：需要清除的和不需要清除的。
+useEffect hook 可以让你在函数组件中执行副作用操作。组件里有两种常见副作用操作：需要清除的和不需要清除的。
 
-其实 useEffect Hook 可以看做 class 组件 `componentDidMount`，`componentDidUpdate` 和 `componentWillUnmount` 这三个生命周期函数的组合。
+其实 useEffect hook 可以看做`class`组件 `componentDidMount`，`componentDidUpdate` 和 `componentWillUnmount` 这三个生命周期函数的组合。
 
-语法：useEffect(callback, deps)
+语法：`useEffect(callback, deps)`
 
 ##### 无需清除的 effect
 
@@ -110,7 +110,7 @@ useEffect(() => {
 
 - 可以看做 componentDidMount 和 componentDidUpdate 函数的组合，只不过 componentDidUpdate 函数要执行 callback，需要受 deps 控制
 - 只有 deps 中的 state 值发生变化，componentDidUpdate 函数才会执行 callback
-- 这里类似 vue 中的 watch，并且开启了立即监听的属性 immediate:true
+- 这里类似`vue`中的`watch`，并且开启了立即监听的属性`immediate:true`
 
 ##### 需要清除的 effect
 
@@ -133,7 +133,7 @@ useEffect(() => {
 
 #### 3. useRef、useImperativeHandle Hook
 
-3.1 在 DOM 节点上定义 ref 属性，通过`.current`就可以获取到该 DOM 元素
+3.1 在 DOM 节点上定义`ref`属性，通过`.current`就可以获取到该 DOM 元素
 
 ```jsx
 let inputEl = useRef(null);
@@ -148,7 +148,7 @@ return (
 );
 ```
 
-3.2 子组件结合 forwardRef 方法和 useImperativeHandle Hook 可自定义暴露方法给父组件
+3.2 子组件结合`forwardRef`方法和 useImperativeHandle hook 可自定义暴露方法给父组件
 
 ```jsx
 // 子组件
@@ -165,7 +165,7 @@ const CommentEditor = forwardRef((props, ref) => {
    const handleSubmit = () => {
     submitSuccess();
   };
-  return <button onClick={() => handleSubmit()}>提交</button>
+  <button onClick={handleSubmit}>提交</button>
 }
 ```
 
@@ -181,9 +181,9 @@ const Message = () => {
 };
 ```
 
-- 通过 forwardRef 方法包裹子组件，子组件可接收父组件的 ref 属性
-- 在子组件定义 useImperativeHandle Hook，自定义方法 resetData，暴露给父组件
-- 在父组件定义 useRef Hook，通过 ref 属性传给子组件，便可接收子组件暴露的数据
+- 通过`forwardRef`方法包裹子组件，子组件可接收父组件的`ref`属性
+- 在子组件定义 useImperativeHandle Hook，自定义方法`resetData`，暴露给父组件
+- 在父组件定义 useRef Hook，通过 `ref` 属性传给子组件，便可接收子组件暴露的数据
 
 #### 4. useMemo Hook
 
@@ -208,7 +208,7 @@ isInclude;
 
 useCallback 可以说是 useMemo 的语法糖；它的使用和 useMemo 是一样的，只是 useCallback 返回的是一个函数。
 
-useCallback(fn, deps) 相当于 useMemo(() => fn, deps)，也就是说 useMemo 的 callback 返回了一个函数。
+`useCallback(fn, deps)`相当于`useMemo(() => fn, deps)`，也就是说 useMemo 的 callback 返回了一个函数。
 
 ```jsx
 const getLikesColor = useCallback(
@@ -219,10 +219,59 @@ const getLikesColor = useCallback(
 getLikesColor(commentItem._id);
 ```
 
-- useMemo、useCallback 功能跟 vue 中的 computed 类似，computed 中会自动监听所有依赖值，只要其中一个依赖值的数据发生变化，便会重新计算更新数据
+- useMemo、useCallback 功能跟`vue`中的`computed`类似，`computed`中会自动监听所有依赖值，只要其中一个依赖值的数据发生变化，便会重新计算更新数据
 - useMemo、useCallback 则是自定义传入依赖，只有传入的依赖数据发生变化，才会重新计算更新数据，比较灵活
 
 #### 6. 自定义 Hook
+
+```jsx
+// useHooks/useGetLabelColor
+import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
+/**
+ * 封装获取标签背景色逻辑
+ * @description 文章Item、文章详情Detail
+ */
+const useGetLabelColor = () => {
+  let labelList = useSelector((state) => state.label);
+
+  // 获取标签颜色
+  const getLabelColor = useCallback(
+    (labelName) => {
+      if (labelList.length) {
+        let labelIndex = 0;
+        labelList.forEach((item, index) => {
+          if (labelName === item.label) {
+            labelIndex = index;
+          }
+        });
+        return labelList[labelIndex].bgColor;
+      }
+      return '';
+    },
+    [labelList]
+  );
+
+  return {
+    getLabelColor,
+  };
+};
+export default useGetLabelColor;
+```
+
+```jsx
+// 在组件里导入，解构，运用
+import useGetLabelColor from '@/useHooks/useGetLabelColor';
+const Article = () => {
+  let { getLabelColor } = useGetLabelColor();
+  return (
+    <div
+      className="box-text label-text"
+      style={{ backgroundColor: getLabelColor(label) }}
+    </div>
+  );
+};
+```
 
 ### 三、组件通信
 
@@ -233,7 +282,7 @@ getLikesColor(commentItem._id);
 <List hideTitle={true} params={params}></List>
 ```
 
-```javascript
+```js
 // 子组件
 const List = (props) => {
   // ...
@@ -241,47 +290,47 @@ const List = (props) => {
 ```
 
 - 父组件通过属性传值给子组件
-- 子组件通过 props 接收父组件的数据
+- 子组件通过`props`接收父组件的数据
 
 #### 2. 子组件传值给父组件
 
 ```jsx
 // 父组件
-let [params, setParams] = useState({ type: "" });
+let [params, setParams] = useState({ type: '' });
 <LabelSelect params={params} setParams={setParams} />;
 ```
 
-```javascript
+```js
 // 子组件
 const LabelSelect = (props) => {
   let { params, setParams } = props;
 
   const handleLabel = () => {
-    params.type = "javascript";
+    params.type = 'js';
     setParams({ ...params });
   };
 };
 ```
 
 - 父组件定义好要传给子组件的方法`setParams`，通过 props 传给子组件
-- 子组件接收 props，解构出`setParams`方法
+- 子组件接收 props，解构出 setParams 方法
 - 通过在子组件中调用该方法，并传入参数`{ ...params }`
 - 父组件就能接收子组件传入的参数，更新父组件的`params`数据
 
 ### 四、react-router v6 新特性
 
-1. <Switch>重命名为<Routes>，功能保持不变
-2. <Route>的新特性变更，component/render 属性被 element 属性替代
-3. 新 Hook useRoutes 代替 react-router-config
-4. 用 useNavigate 代替 useHistory，将 history.push()替换为 navigation()
-5. 新 API:<Outlet/>，类似 vue 中<router-view><router-view/>
+1. `<Switch>`重命名为`<Routes>`，功能保持不变
+2. `<Route>`的新特性变更，`component/render`属性被`element`属性替代
+3. 新 hook `useRoutes`代替``react-router-config`
+4. 用`useNavigate`代替`useHistory`，将`history.push()`替换为`navigation()`
+5. 新 api：`<Outlet/>`，类似`vue`中`<router-view><router-view/>`
 6. [更多具体用法可参考官方文档](https://reactrouter.com/docs/en/v6/api)
 
 ```jsx
 // tabbar/index.jsx
-import { useNavigate, useLocation } from "react-router-dom";
-import { TabBar } from "antd-mobile";
-import { Outlet } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { TabBar } from 'antd-mobile';
+import { Outlet } from 'react-router-dom';
 
 const FixedBottomNavigation = () => {
   let navigate = useNavigate();
@@ -302,8 +351,7 @@ const FixedBottomNavigation = () => {
         activeKey={pathname}
         onChange={(value) => {
           setRouteActive(value);
-        }}
-      >
+        }}>
         {tabs.map((item) => (
           <TabBar.Item key={item.path} icon={item.icon} title={item.title} />
         ))}
@@ -316,14 +364,14 @@ export default FixedBottomNavigation;
 
 ```jsx
 // router/index.jsx
-import { lazy, Suspense } from "react";
-import { Loading } from "antd-mobile";
-import { useRoutes } from "react-router-dom";
-import Tabbar from "@/components/tabbar";
+import { lazy, Suspense } from 'react';
+import { Loading } from 'antd-mobile';
+import { useRoutes } from 'react-router-dom';
+import Tabbar from '@/components/tabbar';
 
-const Home = lazy(() => import("@/pages/home"));
-const Label = lazy(() => import("@/pages/label"));
-const Article = lazy(() => import("@/pages/article"));
+const Home = lazy(() => import('@/pages/home'));
+const Label = lazy(() => import('@/pages/label'));
+const Article = lazy(() => import('@/pages/article'));
 // 路由懒加载，需配合Suspense使用
 const lazyLoad = (children) => {
   return <Suspense fallback={<Loading />}>{children}</Suspense>;
@@ -331,20 +379,20 @@ const lazyLoad = (children) => {
 const AppRouter = () => {
   return useRoutes([
     {
-      path: "/",
+      path: '/',
       element: <Tabbar />,
       children: [
         {
-          path: "home",
+          path: 'home',
           element: lazyLoad(<Home />),
         },
         {
-          path: "label",
+          path: 'label',
           element: lazyLoad(<Label />),
         },
       ],
     },
-    { path: "/article/detail/:id", element: lazyLoad(<Article />) },
+    { path: '/article/detail/:id', element: lazyLoad(<Article />) },
   ]);
 };
 export default AppRouter;
@@ -353,11 +401,11 @@ export default AppRouter;
 ### 四、react-redux 使用
 
 ```jsx
-// redux/store
-import { createStore, applyMiddleware } from "redux";
-import reducer from "./reducers";
-import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
+// redux/store,js
+import { createStore, applyMiddleware } from 'redux';
+import reducer from './reducers';
+import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 export default createStore(
   reducer,
@@ -365,28 +413,28 @@ export default createStore(
 );
 ```
 
-- 配置 composeWithDevTools 是为了能在 redux devtools 插件中查看存储在 redux 数据的状态变化
-- 要在 redux 进行异步请求，需要安装 redux-thunk 依赖库，配合 applyMiddleware 中间件使用
+- 配置 `composeWithDevTools` 是为了能在 `redux devtools` 插件中查看存储在 redux 数据的状态变化
+- 要在 redux 进行异步请求，需要安装 `redux-thunk `依赖库，配合 `applyMiddleware` 中间件使用
 
 ```jsx
 // redux/reducers/index.js
-import { combineReducers } from "redux";
-import label from "./label";
+import { combineReducers } from 'redux';
+import label from './label';
 
 export default combineReducers({
   label,
 });
 ```
 
-- combineReducers 是用来合并多个 reducer，并统一暴露出去
+- `combineReducers`是用来合并多个`reducer`，并统一暴露出去
 
 自定义一个获取标签数据的 hook，组件中需要引用标签数据的，将其引入；组件更新时会先从 redux 拿数据，无数据的话就重新发起异步请求，此举是为了防止页面刷新，redux 里的数据丢失。
 
 ```jsx
 // useHooks/useGetLabelList.js
-import { useEffect } from "react";
-import { getLabelList } from "@/redux/actions/label";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from 'react';
+import { getLabelList } from '@/redux/actions/label';
+import { useSelector, useDispatch } from 'react-redux';
 
 const useGetLabelList = () => {
   let labelList = useSelector((state) => state.label);
@@ -402,8 +450,87 @@ const useGetLabelList = () => {
 export default useGetLabelList;
 ```
 
-- useSelector 获取存储在 redux 的数据
-- 要在 redux 进行异步请求，就需要通过 useDispatch 来分发 actions
+- `useSelector`获取存储在 redux 的数据
+- 要在 redux 进行异步请求，就需要通过`useDispatch`来分发`actions`
+
+### 五、配置代理
+
+`http-proxy-middleware`是一个代理中间件，通过它把请求代理转发到其他服务器，解决跨域问题
+
+1. 安装`yarn add http-proxy-middleware`
+2. 在 src 中新建 `setupProxy.js`文件，并配置
+
+```js
+// src/setupProxy.js
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+module.exports = (app) => {
+  app.use(
+    createProxyMiddleware('/client_api', {
+      target: 'http://localhost:3000/client_api/', // 设置目标服务器host
+      secure: false,
+      changeOrigin: true, // 是否需要改变原始主机头为目标URL
+      pathRewrite: {
+        '^/client_api': '/', // 重写目标url路径，将client_api前缀去掉
+      },
+    })
+  );
+};
+```
+
+### 六、其他
+
+#### 1. React.memo
+
+```jsx
+import React from 'react';
+
+const SvgIcon = (prop) => {
+  let iconName = `#${prop.name}`;
+  return (
+    <svg className="icon" aria-hidden="true">
+      <use xlinkHref={iconName}></use>
+    </svg>
+  );
+};
+export default React.memo(SvgIcon);
+```
+
+- React.memo 为高阶组件
+- React.memo 仅检查 props 变更
+- 组件在相同 props 的情况下渲染相同的结果，就可以将其包装在 React.memo 中调用，组件就会直接复用最近一次渲染的结果，而不会重新渲染
+
+#### 2. React.Fragment
+
+组件在返回多个元素时，需要有一个根节点包裹着，这样有时候会给 DOM 中增加额外节点
+
+Fragments 可以让你聚合一个子元素列表，并且不在 DOM 中增加额外节点。
+
+短语法是`<> </>`像空标签，但是短语法不支持绑定`key`属性以及其他属性
+
+```jsx
+// 带 key 的 Fragments
+return (
+  <dl>
+    {props.items.map((item) => (
+      <React.Fragment key={item.id}>
+        <dt>{item.term}</dt>
+        <dd>{item.description}</dd>
+      </React.Fragment>
+    ))}
+  </dl>
+);
+```
+
+```jsx
+// 短语法
+return (
+  <>
+    <Outlet />
+    <TabBar />
+  </>
+);
+```
 
 ## 后端服务
 
@@ -438,10 +565,10 @@ export default {
   auth,
   log,
   mongodb: {
-    username: "wall", // 数据库用户
+    username: 'wall', // 数据库用户
     pwd: 123456, // 数据库密码
-    address: "localhost:27017",
-    db: "wallBlog", // 数据库名
+    address: 'localhost:27017',
+    db: 'wallBlog', // 数据库名
   },
 };
 ```
@@ -466,5 +593,3 @@ yarn server // 开启后端接口，成功了便会提示数据库连接成功
 ```
 
 ## 注意事项
-
-## 参考文档

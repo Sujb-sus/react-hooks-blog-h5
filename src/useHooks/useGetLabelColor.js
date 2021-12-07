@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-
+/**
+ * 封装获取标签背景色逻辑
+ * @description 文章Item、文章详情Detail
+ */
 const useGetLabelColor = () => {
   let labelList = useSelector((state) => state.label);
 

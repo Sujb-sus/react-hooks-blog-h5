@@ -25,8 +25,8 @@ const CommentEditor = forwardRef((props, ref) => {
       return false;
     }
     const params = {
-      content: content,
-      nickname: nickname,
+      content,
+      nickname,
       createTime: new Date().getTime() + '',
       headerColor: colorList[Math.floor(Math.random() * 7)],
     };
@@ -63,7 +63,7 @@ const CommentEditor = forwardRef((props, ref) => {
           className="edit-name"
           onChange={(val) => setNickname(val)}
         />
-        <button onClick={() => handleSubmit()}>提交</button>
+        <button onClick={handleSubmit}>提交</button>
       </div>
     </div>
   );

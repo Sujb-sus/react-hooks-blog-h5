@@ -1,10 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import base from '@/utils/base';
-
+/**
+ * 封装点赞逻辑
+ * @requestApi api请求的path
+ * @description 点赞文章、留言
+ */
 const useClickLike = (requestApi) => {
   let [currentId, setCurrentId] = useState(''); // 当前id
   let [isLike, setIsLike] = useState(false); // 是否点赞
-  let [isLikeSuccess, setIsLikeSuccess] = useState(true); // 是否点赞
+  let [isLikeSuccess, setIsLikeSuccess] = useState(true); // 是否点赞成功
   let [likeList, setLikeList] = useState([]); // 当前点赞列表
 
   // 获取点赞数

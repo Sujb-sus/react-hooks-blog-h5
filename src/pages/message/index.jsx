@@ -14,18 +14,19 @@ import './message.scss';
 
 const Message = () => {
   let [commentList, setCommentList] = useState([]);
-  let [pageindex, setPageindex] = useState(1);
-  let [total, setTotal] = useState(-1);
-  let [replyCount, setReplyCount] = useState(0);
   let [hasMore, setHasMore] = useState(false);
   let editorRef = useRef();
+  let pageindex = useRef(1);
+  let replyCount = useRef(0);
+  let total = useRef(-1);
   let pagesize = 10;
 
   useEffect(() => {
-    pageindex === 1 && initData();
-  }, [pageindex]);
+    initData();
+  }, []);
   // 初始化数据
   const initData = () => {
+    pageindex.current = 1;
     base.showLoading();
     Promise.all([handleLoadMore(), getReplyCount()])
       .catch((err) => {
@@ -39,15 +40,15 @@ const Message = () => {
   const handleLoadMore = async () => {
     try {
       const res = await apiGetMessageList({
-        pageindex,
+        pageindex: pageindex.current,
         pagesize,
       });
-      pageindex === 1
+      pageindex.current === 1
         ? setCommentList(res?.data?.list)
         : setCommentList((val) => [...val, ...res?.data?.list]);
-      setTotal(res?.data?.total);
-      setHasMore(pageindex * pagesize < res?.data?.total);
-      setPageindex(pageindex + 1);
+      setHasMore(pageindex.current * pagesize < res?.data?.total);
+      total.current = res?.data?.total;
+      pageindex.current++;
     } catch (error) {
       console.log('error', error);
     }
@@ -55,7 +56,7 @@ const Message = () => {
   // 获取回复数量
   const getReplyCount = () => {
     return apiGetReplyCount().then((res) => {
-      setReplyCount(res?.data[0]?.replyCount);
+      replyCount.current = res?.data[0]?.replyCount;
     });
   };
   // 添加留言内容
@@ -64,7 +65,7 @@ const Message = () => {
     return apiAddMessage(params)
       .then(() => {
         editorRef.current.resetData();
-        setPageindex(1);
+        initData();
       })
       .catch((err) => console.log(err))
       .finally(() => {
@@ -78,17 +79,18 @@ const Message = () => {
       <div className="comment-list">
         <div className="side-title">
           <SvgIcon name="icon-comment"></SvgIcon>
-          <span>{total}</span>条评论， <span>{replyCount}</span>条回复
+          <span>{total.current}</span>条评论， <span>{replyCount.current}</span>
+          条回复
         </div>
-        {total > 0 &&
+        {total.current > 0 &&
           commentList.map((item) => (
             <CommentItem
               commentItem={item}
               key={item._id}
-              setPageindex={setPageindex}></CommentItem>
+              initMessageData={initData}></CommentItem>
           ))}
         <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore} />
-        {!total && <NoData />}
+        {!total.current && <NoData />}
       </div>
     </div>
   );
