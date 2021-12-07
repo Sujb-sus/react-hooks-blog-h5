@@ -57,9 +57,9 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 - remUnit 属性是根据设计稿宽度除以 10 进行设置，假设设计稿为 375，即 remUnit 设为 37.5
 - exclude 属性是忽略 node_modules 目录下的文件转为 rem
 
-### 二、`Hooks`运用
+### 二、Hooks 运用
 
-1. useState hook
+#### 1. useState Hook
 
 ```jsx
 const [state, setState] = useState(initialState);
@@ -67,6 +67,162 @@ const [state, setState] = useState(initialState);
 
 - useState()传入 state 的初始值 initialState
 - 通过数组解构出 state, setState（更新 state 的方法）
+
+#### 2. useEffect Hook
+
+useEffect Hook 可以让你在函数组件中执行副作用操作。组件里有两种常见副作用操作：需要清除的和不需要清除的。
+
+其实 useEffect Hook 可以看做 class 组件 `componentDidMount`，`componentDidUpdate` 和 `componentWillUnmount` 这三个生命周期函数的组合。
+
+语法：useEffect(callback, deps)
+
+##### 无需清除的 effect
+
+发送网络请求，手动变更 DOM，记录日志，这些都是常见的无需清除的操作。
+
+2.1 不传 deps 参数
+
+```jsx
+useEffect(async () => {
+  await getBlogDetail();
+});
+```
+
+- 相当于 componentDidMount 和 componentDidUpdate 函数，在组件第一次渲染之后和每次更新之后都会执行 callback
+
+  2.2 deps 传递空数组
+
+```jsx
+useEffect(async () => {
+  await getBlogDetail();
+}, []);
+```
+
+- 相当于 componentDidMount 函数，只在组件第一次渲染之后调用一次 callback
+
+  2.3 deps 传递包含 state 值的依赖数组
+
+```jsx
+useEffect(() => {
+  initData();
+}, [pageindex]);
+```
+
+- 可以看做 componentDidMount 和 componentDidUpdate 函数的组合，只不过 componentDidUpdate 函数要执行 callback，需要受 deps 控制
+- 只有 deps 中的 state 值发生变化，componentDidUpdate 函数才会执行 callback
+- 这里类似 vue 中的 watch，并且开启了立即监听的属性 immediate:true
+
+##### 需要清除的 effect
+
+有些副作用是需要清除的，防止引起内存泄露。比如订阅外部数据源、设置定时器等
+
+```jsx
+let interval = useRef(null);
+useEffect(() => {
+  interval.current = setInterval(() => {
+    //   ...
+  }, 200);
+
+  return () => {
+    clearInterval(interval.current);
+  };
+}, []);
+```
+
+- useEffect 在执行 callback 时，如果 callback 返回一个函数，那么这个函数就相当于 componentWillUnmount 函数，在里面可以处理要清除 effect 的逻辑
+
+#### 3. useRef、useImperativeHandle Hook
+
+3.1 在 DOM 节点上定义 ref 属性，通过`.current`就可以获取到该 DOM 元素
+
+```jsx
+let inputEl = useRef(null);
+const handleFocus = () => {
+  inputEl.current.focus();
+};
+return (
+  <>
+    <input ref={inputEl} type="text" />
+    <button onClick={handleFocus}>Focus the input</button>
+  </>
+);
+```
+
+3.2 子组件结合 forwardRef 方法和 useImperativeHandle Hook 可自定义暴露方法给父组件
+
+```jsx
+// 子组件
+const CommentEditor = forwardRef((props, ref) => {
+   let { submitSuccess } = props;
+   // 暴露方法给父组件
+   useImperativeHandle(ref, () => ({
+    resetData,
+   }));
+   // 重置表单数据
+   const resetData = () => {
+      console.log('resetData');
+   };
+   const handleSubmit = () => {
+    submitSuccess();
+  };
+  return <button onClick={() => handleSubmit()}>提交</button>
+}
+```
+
+```jsx
+// 父组件
+const Message = () => {
+  let editorRef = useRef();
+  const addMessage = () => {
+    // 获取子组件的resetData方法
+    editorRef.current.resetData();
+  };
+  return <CommentEditor submitSuccess={addMessage} ref={editorRef} />;
+};
+```
+
+- 通过 forwardRef 方法包裹子组件，子组件可接收父组件的 ref 属性
+- 在子组件定义 useImperativeHandle Hook，自定义方法 resetData，暴露给父组件
+- 在父组件定义 useRef Hook，通过 ref 属性传给子组件，便可接收子组件暴露的数据
+
+#### 4. useMemo Hook
+
+useMemo 用于性能优化，通过记忆值来避免在每个渲染上执⾏高开销的计算。
+
+语法：useMemo(callback, deps)
+
+- 不传 deps 参数，每次更新都会重新计算
+- deps 为空数组，只会计算一次
+- deps 为 state 组成的依赖数组，当对应的 state 发生变化时，才会重新计算(可以依赖另外一个 useMemo 返回的值)
+
+```jsx
+const isInclude = useMemo(
+  () => isLikeSuccess && likeList.includes(id),
+  [likeList, isLikeSuccess]
+);
+// 返回一个布尔值，可直接使用
+isInclude;
+```
+
+#### 5. useCallback Hook
+
+useCallback 可以说是 useMemo 的语法糖；它的使用和 useMemo 是一样的，只是 useCallback 返回的是一个函数。
+
+useCallback(fn, deps) 相当于 useMemo(() => fn, deps)，也就是说 useMemo 的 callback 返回了一个函数。
+
+```jsx
+const getLikesColor = useCallback(
+  (id) => isLikeSuccess && likeList.includes(id),
+  [likeList, isLikeSuccess]
+);
+// 返回一个参数，调用时传入id参数
+getLikesColor(commentItem._id);
+```
+
+- useMemo、useCallback 功能跟 vue 中的 computed 类似，computed 中会自动监听所有依赖值，只要其中一个依赖值的数据发生变化，便会重新计算更新数据
+- useMemo、useCallback 则是自定义传入依赖，只有传入的依赖数据发生变化，才会重新计算更新数据，比较灵活
+
+#### 6. 自定义 Hook
 
 ### 三、组件通信
 
@@ -112,7 +268,142 @@ const LabelSelect = (props) => {
 - 通过在子组件中调用该方法，并传入参数`{ ...params }`
 - 父组件就能接收子组件传入的参数，更新父组件的`params`数据
 
-**注意：**在 vue 中，子组件接收父组件的 props，是不允许子组件直接修改 props 里面的数据，而 react 是可以的。
+### 四、react-router v6 新特性
+
+1. <Switch>重命名为<Routes>，功能保持不变
+2. <Route>的新特性变更，component/render 属性被 element 属性替代
+3. 新 Hook useRoutes 代替 react-router-config
+4. 用 useNavigate 代替 useHistory，将 history.push()替换为 navigation()
+5. 新 API:<Outlet/>，类似 vue 中<router-view><router-view/>
+6. [更多具体用法可参考官方文档](https://reactrouter.com/docs/en/v6/api)
+
+```jsx
+// tabbar/index.jsx
+import { useNavigate, useLocation } from "react-router-dom";
+import { TabBar } from "antd-mobile";
+import { Outlet } from "react-router-dom";
+
+const FixedBottomNavigation = () => {
+  let navigate = useNavigate();
+  let location = useLocation();
+  let { pathname } = location;
+
+  // 路由跳转
+  const setRouteActive = (path) => {
+    navigate(path);
+  };
+  return (
+    <>
+      {/* 匹配TabBar组件的子路由 */}
+      <Outlet />
+
+      <TabBar
+        className="tabbar-footer btm-btn-bar-ipx"
+        activeKey={pathname}
+        onChange={(value) => {
+          setRouteActive(value);
+        }}
+      >
+        {tabs.map((item) => (
+          <TabBar.Item key={item.path} icon={item.icon} title={item.title} />
+        ))}
+      </TabBar>
+    </>
+  );
+};
+export default FixedBottomNavigation;
+```
+
+```jsx
+// router/index.jsx
+import { lazy, Suspense } from "react";
+import { Loading } from "antd-mobile";
+import { useRoutes } from "react-router-dom";
+import Tabbar from "@/components/tabbar";
+
+const Home = lazy(() => import("@/pages/home"));
+const Label = lazy(() => import("@/pages/label"));
+const Article = lazy(() => import("@/pages/article"));
+// 路由懒加载，需配合Suspense使用
+const lazyLoad = (children) => {
+  return <Suspense fallback={<Loading />}>{children}</Suspense>;
+};
+const AppRouter = () => {
+  return useRoutes([
+    {
+      path: "/",
+      element: <Tabbar />,
+      children: [
+        {
+          path: "home",
+          element: lazyLoad(<Home />),
+        },
+        {
+          path: "label",
+          element: lazyLoad(<Label />),
+        },
+      ],
+    },
+    { path: "/article/detail/:id", element: lazyLoad(<Article />) },
+  ]);
+};
+export default AppRouter;
+```
+
+### 四、react-redux 使用
+
+```jsx
+// redux/store
+import { createStore, applyMiddleware } from "redux";
+import reducer from "./reducers";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
+
+export default createStore(
+  reducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
+```
+
+- 配置 composeWithDevTools 是为了能在 redux devtools 插件中查看存储在 redux 数据的状态变化
+- 要在 redux 进行异步请求，需要安装 redux-thunk 依赖库，配合 applyMiddleware 中间件使用
+
+```jsx
+// redux/reducers/index.js
+import { combineReducers } from "redux";
+import label from "./label";
+
+export default combineReducers({
+  label,
+});
+```
+
+- combineReducers 是用来合并多个 reducer，并统一暴露出去
+
+自定义一个获取标签数据的 hook，组件中需要引用标签数据的，将其引入；组件更新时会先从 redux 拿数据，无数据的话就重新发起异步请求，此举是为了防止页面刷新，redux 里的数据丢失。
+
+```jsx
+// useHooks/useGetLabelList.js
+import { useEffect } from "react";
+import { getLabelList } from "@/redux/actions/label";
+import { useSelector, useDispatch } from "react-redux";
+
+const useGetLabelList = () => {
+  let labelList = useSelector((state) => state.label);
+  let dispatch = useDispatch();
+
+  // 获取标签数据，存储到redux
+  useEffect(() => {
+    if (!labelList.length) {
+      dispatch(getLabelList());
+    }
+  }, []);
+};
+export default useGetLabelList;
+```
+
+- useSelector 获取存储在 redux 的数据
+- 要在 redux 进行异步请求，就需要通过 useDispatch 来分发 actions
 
 ## 后端服务
 
@@ -176,13 +467,4 @@ yarn server // 开启后端接口，成功了便会提示数据库连接成功
 
 ## 注意事项
 
-1. `env.d.ts`文件：用 ts 写的模块在发布的时候仍然是用 js 发布，所以需要一个 d.ts 文件来标记某个 js 库里面对象的类型
-2. `models/index.ts`文件：用来定义接口返回的数据的类型，每个数据的类型都需要定义，不然在打包 vue 文件的 html 渲染数据时会有问题；导出需要用`export type {...}`格式导出
-3. `components/noData.tsx`文件：引用静态图片时，需要用模块导入的形式导入进来，直接在 html 使用图片路径在打包时，不会自动解析该图片路径
-4. `styles/common/iphone_x.scss`文件：提供了适配 iPhonex 全面屏系列的底部间距
-5. `tsconfig.json`文件：strict：true 开启所有严格类型检查
-
 ## 参考文档
-
-1. ts 中文文档：[https://www.tslang.cn/docs/handbook/compiler-options.html](https://www.tslang.cn/docs/handbook/compiler-options.html)
-2. vite 中文文档：[https://cn.vitejs.dev/config/](https://cn.vitejs.dev/config/)
