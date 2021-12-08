@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { InfiniteScroll, PullToRefresh } from 'antd-mobile';
-import { Link } from 'react-router-dom';
-import SvgIcon from '@/components/svgIcon';
-import NoData from '@/components/noData';
-import ListItem from '../listItem';
-import { apiGetBlogList } from '@/api/blog';
-import base from '@/utils/base';
-import './list.scss';
+import React, { useState, useEffect, useRef } from "react";
+import { InfiniteScroll, PullToRefresh } from "antd-mobile";
+import SvgIcon from "@/components/svgIcon";
+import NoData from "@/components/noData";
+import ListItem from "../listItem";
+import { apiGetBlogList } from "@/api/blog";
+import base from "@/utils/base";
+import "./list.scss";
 
 const List = (props) => {
   let [list, setList] = useState([]);
@@ -35,14 +34,14 @@ const List = (props) => {
         ...props.params,
       });
       reload && base.hideLoading();
+      total.current = res?.data?.total;
       pageindex.current === 1
         ? setList(res?.data?.list)
         : setList((val) => [...val, ...res?.data?.list]);
       setHasMore(pageindex.current * pagesize < res?.data?.total);
-      total.current = res?.data?.total;
       pageindex.current++;
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
     }
   };
 
@@ -57,11 +56,8 @@ const List = (props) => {
 
       <PullToRefresh onRefresh={handleLoadMore}>
         {total.current > 0 &&
-          list.map((item) => (
-            <Link to={`/article/detail/${item._id}`} key={item._id}>
-              <ListItem item={item} />
-            </Link>
-          ))}
+          list.map((item) => <ListItem item={item} key={item._id} />)}
+
         <InfiniteScroll
           loadMore={() => handleLoadMore(false)}
           hasMore={hasMore}

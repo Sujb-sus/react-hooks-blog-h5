@@ -1,29 +1,29 @@
-import React, { useState, useRef } from 'react';
-import { apiUpdateLikes, apiUpdateReplys } from '@/api/message';
-import SvgIcon from '@/components/svgIcon';
-import { formatTime, formatNumber } from '@/utils/filter';
-import useClickLikes from '@/useHooks/useClickLikes';
-import CommentEditor from '../commentEditor';
-import ReplyItem from '../replyItem';
-import './commentItem.scss';
+import React, { useState, useRef } from "react";
+import { apiUpdateLikes, apiUpdateReplys } from "@/api/message";
+import SvgIcon from "@/components/svgIcon";
+import { formatTime, formatNumber } from "@/utils/filter";
+import useClickLikes from "@/useHooks/useClickLikes";
+import CommentEditor from "../commentEditor";
+import ReplyItem from "../replyItem";
+import "./commentItem.scss";
 
 const CommentItem = (props) => {
   let { commentItem, initMessageData } = props;
   let { getLikesNumber, getLikesColor, handleLikes } =
     useClickLikes(apiUpdateLikes);
   let [isEdit, setIsEdit] = useState(false);
-  let currentId = useRef('');
-  let byReplyUser = useRef('');
+  let currentId = useRef("");
+  let byReplyUser = useRef("");
   let editorRef = useRef();
   let colorList = [
-    '#EB6841',
-    '#3FB8AF',
-    '#464646',
-    '#FC9D9A',
-    '#ED8901',
-    '#C8C8A9',
-    '#83AF9B',
-    '#036564',
+    "#EB6841",
+    "#3FB8AF",
+    "#464646",
+    "#FC9D9A",
+    "#ED8901",
+    "#C8C8A9",
+    "#83AF9B",
+    "#036564",
   ];
 
   // 点击回复事件
@@ -36,7 +36,7 @@ const CommentItem = (props) => {
   const addReply = (replyItem) => {
     const params = {
       _id: currentId.current,
-      replyTime: new Date().getTime() + '',
+      replyTime: new Date().getTime() + "",
       replyContent: replyItem.content,
       replyUser: replyItem.nickname,
       byReplyUser: currentId.byReplyUser,
@@ -62,36 +62,31 @@ const CommentItem = (props) => {
           <div className="box-title">
             {commentItem.nickname}
             <span>
-              {formatTime(commentItem.createTime, 'yyyy-MM-dd hh:mm')}
+              {formatTime(commentItem.createTime, "yyyy-MM-dd hh:mm")}
             </span>
           </div>
           <div
             className="box-content"
-            dangerouslySetInnerHTML={{ __html: commentItem.content }}></div>
+            dangerouslySetInnerHTML={{ __html: commentItem.content }}
+          ></div>
           <div className="item-icon">
             <div
-              className={`box-icon ${
-                getLikesColor(commentItem._id) ? 'icon-likes' : ''
-              }`}
-              onClick={() => handleLikes(commentItem._id)}>
+              className={`box-icon ${getLikesColor ? "icon-likes" : ""}`}
+              onClick={(e) => handleLikes(e, commentItem._id)}
+            >
               <SvgIcon name="icon-like02"></SvgIcon>
-              <span>
-                {formatNumber(
-                  getLikesNumber(commentItem._id, commentItem.likes)
-                )}
-              </span>
+              <span>{formatNumber(getLikesNumber(commentItem.likes))}</span>
             </div>
             <div
               className="box-icon box-reply"
-              onClick={() =>
-                handleReply(commentItem._id, commentItem.nickname)
-              }>
+              onClick={() => handleReply(commentItem._id, commentItem.nickname)}
+            >
               <SvgIcon name="icon-reply02"></SvgIcon>
-              <span>{isEdit ? '取消' : '回复'}</span>
+              <span>{isEdit ? "取消" : "回复"}</span>
               <span>
                 {commentItem.replyList?.length
                   ? commentItem.replyList?.length
-                  : ''}
+                  : ""}
               </span>
             </div>
           </div>

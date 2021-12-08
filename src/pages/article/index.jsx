@@ -11,7 +11,6 @@ import useGetLabelList from '@/useHooks/useGetLabelList';
 
 const Article = () => {
   useGetLabelList();
-  document.title = '文章详情';
   let { getLabelColor } = useGetLabelColor();
   let params = useParams();
   let id = params.id;

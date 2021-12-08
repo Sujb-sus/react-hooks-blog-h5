@@ -1,47 +1,35 @@
-import { useState, useEffect, useCallback } from 'react';
-import base from '@/utils/base';
+import { useState, useMemo, useCallback, useRef } from "react";
+import base from "@/utils/base";
 /**
  * 封装点赞逻辑
  * @requestApi api请求的path
  * @description 点赞文章、留言
  */
 const useClickLike = (requestApi) => {
-  let [currentId, setCurrentId] = useState(''); // 当前id
-  let [isLike, setIsLike] = useState(false); // 是否点赞
-  let [isLikeSuccess, setIsLikeSuccess] = useState(true); // 是否点赞成功
-  let [likeList, setLikeList] = useState([]); // 当前点赞列表
+  let [isLikeSuccess, setLikeSuccess] = useState(false); // 点赞操作是否成功
+  let likeCount = useRef(0); // 点赞次数
 
   // 获取点赞数
   const getLikesNumber = useCallback(
-    (id, likes) => (isLikeSuccess && likeList.includes(id) ? likes + 1 : likes),
-    [likeList, isLikeSuccess]
+    (likes) => (isLikeSuccess ? likes + 1 : likes),
+    [isLikeSuccess]
   );
   // 点赞高亮
-  const getLikesColor = useCallback(
-    (id) => isLikeSuccess && likeList.includes(id),
-    [likeList, isLikeSuccess]
-  );
+  const getLikesColor = useMemo(() => isLikeSuccess, [isLikeSuccess]);
 
-  useEffect(() => {
-    if (currentId) {
-      requestApi({ _id: currentId, isLike }).catch(() => {
-        base.toast('点赞失败');
-        setIsLikeSuccess(false);
-      });
-    }
-  }, [currentId, isLike]);
   // 点赞事件
-  const handleLikes = (id) => {
-    if (likeList.includes(id)) {
-      setIsLike(true);
-      likeList.splice(likeList.indexOf(id), 1);
-      setLikeList(likeList);
-    } else {
-      setIsLike(false);
-      likeList.push(id);
-      setLikeList(likeList);
-    }
-    setCurrentId(id);
+  const handleLikes = (e, id) => {
+    e.stopPropagation();
+    likeCount.current++;
+    // 奇数点赞+1，偶数取消点赞
+    requestApi({ _id: id, isLike: !!!(likeCount.current % 2) })
+      .then(() => {
+        setLikeSuccess(!!(likeCount.current % 2));
+      })
+      .catch(() => {
+        setLikeSuccess(false);
+        base.toast("点赞失败");
+      });
   };
 
   return {

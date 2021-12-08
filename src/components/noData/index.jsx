@@ -1,3 +1,4 @@
+import React from 'react';
 import noData from '@/assets/no-data.jpg';
 
 const NoData = () => {

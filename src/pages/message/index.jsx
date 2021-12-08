@@ -43,11 +43,11 @@ const Message = () => {
         pageindex: pageindex.current,
         pagesize,
       });
+      total.current = res?.data?.total;
       pageindex.current === 1
         ? setCommentList(res?.data?.list)
         : setCommentList((val) => [...val, ...res?.data?.list]);
       setHasMore(pageindex.current * pagesize < res?.data?.total);
-      total.current = res?.data?.total;
       pageindex.current++;
     } catch (error) {
       console.log('error', error);

@@ -1,3 +1,4 @@
+import React from 'react';
 import { lazy, Suspense } from 'react';
 import { Loading } from 'antd-mobile';
 import { useRoutes } from 'react-router-dom';

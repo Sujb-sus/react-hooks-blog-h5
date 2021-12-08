@@ -1,3 +1,4 @@
+import React from 'react';
 import SvgIcon from '@/components/svgIcon';
 import { formatTime } from '@/utils/filter';
 import './replyItem.scss';

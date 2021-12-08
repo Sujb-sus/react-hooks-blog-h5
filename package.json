@@ -48,7 +48,7 @@
     "jest-watch-typeahead": "0.6.1",
     "lib-flexible": "^0.3.2",
     "mini-css-extract-plugin": "0.11.3",
-    "node-sass": "5.0.0",
+    "node-sass": "npm:dart-sass",
     "optimize-css-assets-webpack-plugin": "5.0.4",
     "pnp-webpack-plugin": "1.6.4",
     "postcss-flexbugs-fixes": "4.2.1",

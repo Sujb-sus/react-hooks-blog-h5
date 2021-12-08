@@ -36,8 +36,6 @@ const FixedBottomNavigation = () => {
   let navigate = useNavigate();
   let location = useLocation();
   let { pathname } = location;
-  let index = tabs.findIndex((item) => item.path === pathname);
-  document.title = tabs[index].title;
 
   // 路由跳转
   const setRouteActive = (path) => {
