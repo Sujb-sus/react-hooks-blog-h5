@@ -5,7 +5,7 @@ import './myself.scss';
 
 const Myself = () => {
   return (
-    <div className="app-container">
+    <div className="common-pb">
       <div className="my-bg">
         <img className="img-avatar" src={avatar} />
         <img className="img-bg" src={avatarBg} />

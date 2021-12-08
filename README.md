@@ -18,7 +18,7 @@
 
 # 技术运用
 
-## 一、rem 适配
+## 一、Rem 适配
 
 1. 安装插件`yarn add lib-flexible postcss-px2rem-exclude -S`
 
@@ -28,7 +28,7 @@
 2. 在`src/index.js`导入`lib-flexible`
 
 ```js
-import "lib-flexible";
+import 'lib-flexible';
 ```
 
 3. 在`config/webpack.config.js`配置 postcss-px2rem-exclude
@@ -38,6 +38,7 @@ import "lib-flexible";
 - 在`plugins`配置项里添加`px2rem`的配置内容
 
 ```js
+// config/webpack.config.js
 const px2rem = require('postcss-px2rem-exclude');
 
 const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -76,7 +77,7 @@ useEffect hook 可以让你在函数组件中执行副作用操作。组件里�
 
 语法：`useEffect(callback, deps)`
 
-#### （1）无需清除的 effect
+#### （1）无需清除的 Effect
 
 发送网络请求，手动变更 DOM，记录日志，这些都是常见的无需清除的操作。
 
@@ -88,9 +89,9 @@ useEffect(async () => {
 });
 ```
 
-- 相当于 componentDidMount 和 componentDidUpdate 函数，在组件第一次渲染之后和每次更新之后都会执行 callback
+相当于 componentDidMount 和 componentDidUpdate 函数，在组件第一次渲染之后和每次更新之后都会执行 callback
 
-  2.2 deps 传递空数组
+2.2 deps 传递空数组
 
 ```jsx
 useEffect(async () => {
@@ -98,21 +99,21 @@ useEffect(async () => {
 }, []);
 ```
 
-- 相当于 componentDidMount 函数，只在组件第一次渲染之后调用一次 callback
+相当于 componentDidMount 函数，只在组件第一次渲染之后调用一次 callback
 
-  2.3 deps 传递包含 state 值的依赖数组
+2.3 deps 传递包含 state 值的依赖数组
 
 ```jsx
 useEffect(() => {
-  initData();
-}, [pageindex]);
+  handleLoadMore();
+}, [props.params]);
 ```
 
 - 可以看做 componentDidMount 和 componentDidUpdate 函数的组合，只不过 componentDidUpdate 函数要执行 callback，需要受 deps 控制
 - 只有 deps 中的 state 值发生变化，componentDidUpdate 函数才会执行 callback
 - 这里类似`vue`中的`watch`，并且开启了立即监听的属性`immediate:true`
 
-#### （2）需要清除的 effect
+#### （2）需要清除的 Effect
 
 有些副作用是需要清除的，防止引起内存泄露。比如订阅外部数据源、设置定时器等
 
@@ -129,7 +130,7 @@ useEffect(() => {
 }, []);
 ```
 
-- useEffect 在执行 callback 时，如果 callback 返回一个函数，那么这个函数就相当于 componentWillUnmount 函数，在里面可以处理要清除 effect 的逻辑
+useEffect 在执行 callback 时，如果 callback 返回一个函数，那么这个函数就相当于 componentWillUnmount 函数，在里面可以处理要清除 effect 的逻辑
 
 ### 3. useRef、useImperativeHandle Hook
 
@@ -196,12 +197,13 @@ useMemo 用于性能优化，通过记忆值来避免在每个渲染上执⾏高
 - deps 为 state 组成的依赖数组，当对应的 state 发生变化时，才会重新计算(可以依赖另外一个 useMemo 返回的值)
 
 ```jsx
-const isInclude = useMemo(
-  () => isLikeSuccess && likeList.includes(id),
-  [likeList, isLikeSuccess]
+// 点赞高亮
+const likeColor = useMemo(() => isLikeSuccess, [isLikeSuccess]);
+return (
+  <div
+    className={`footer-item ${likeColor ? 'icon-likes' : ''}`}
+    onClick={(e) => handleLikes(e, item._id)}></div>
 );
-// 返回一个布尔值，可直接使用
-isInclude;
 ```
 
 ### 5. useCallback Hook
@@ -211,66 +213,62 @@ useCallback 可以说是 useMemo 的语法糖；它的使用和 useMemo 是一�
 `useCallback(fn, deps)`相当于`useMemo(() => fn, deps)`，也就是说 useMemo 的 callback 返回了一个函数。
 
 ```jsx
-const getLikesColor = useCallback(
-  (id) => isLikeSuccess && likeList.includes(id),
-  [likeList, isLikeSuccess]
+// 获取点赞数
+const getLikesNumber = useCallback(
+  (likes) => (isLikeSuccess ? likes + 1 : likes),
+  [isLikeSuccess]
 );
-// 返回一个参数，调用时传入id参数
-getLikesColor(commentItem._id);
+return <div className="footer-text">{getLikesNumber(item.likes)}</div>;
 ```
 
 - useMemo、useCallback 功能跟`vue`中的`computed`类似，`computed`中会自动监听所有依赖值，只要其中一个依赖值的数据发生变化，便会重新计算更新数据
 - useMemo、useCallback 则是自定义传入依赖，只有传入的依赖数据发生变化，才会重新计算更新数据，比较灵活
 
-### 6. 自定义 Hook
+### 6. 自定义 Hooks
 
 ```jsx
-// useHooks/useGetLabelColor
-import { useCallback } from "react";
-import { useSelector } from "react-redux";
+// useHooks/useClickLikes.js
+import { useState, useMemo, useCallback, useRef } from 'react';
+import base from '@/utils/base';
 /**
- * 封装获取标签背景色逻辑
- * @description 文章Item、文章详情Detail
+ * 封装点赞逻辑
+ * @requestApi api请求的path
+ * @description 点赞文章、留言
  */
-const useGetLabelColor = () => {
-  let labelList = useSelector((state) => state.label);
+const useClickLike = (requestApi) => {
+  let [isLikeSuccess, setLikeSuccess] = useState(false); // 点赞操作是否成功
+  let likeCount = useRef(0); // 点赞次数
 
-  // 获取标签颜色
-  const getLabelColor = useCallback(
-    (labelName) => {
-      if (labelList.length) {
-        let labelIndex = 0;
-        labelList.forEach((item, index) => {
-          if (labelName === item.label) {
-            labelIndex = index;
-          }
-        });
-        return labelList[labelIndex].bgColor;
-      }
-      return "";
-    },
-    [labelList]
+  // 获取点赞数
+  const getLikesNumber = useCallback(
+    (likes) => (isLikeSuccess ? likes + 1 : likes),
+    [isLikeSuccess]
   );
+  // 点赞高亮
+  const likeColor = useMemo(() => isLikeSuccess, [isLikeSuccess]);
+
+  // 点赞事件
+  const handleLikes = (e, id) => {
+    e.stopPropagation();
+    likeCount.current++;
+    // 奇数点赞+1，偶数取消点赞
+    requestApi({ _id: id, isLike: !!!(likeCount.current % 2) })
+      .then(() => {
+        setLikeSuccess(!!(likeCount.current % 2));
+      })
+      .catch(() => {
+        setLikeSuccess(false);
+        base.toast('点赞失败');
+      });
+  };
 
   return {
-    getLabelColor,
+    getLikesNumber,
+    likeColor,
+    handleLikes,
   };
 };
-export default useGetLabelColor;
-```
-
-```jsx
-// 在组件里导入，解构，运用
-import useGetLabelColor from '@/useHooks/useGetLabelColor';
-const Article = () => {
-  let { getLabelColor } = useGetLabelColor();
-  return (
-    <div
-      className="box-text label-text"
-      style={{ backgroundColor: getLabelColor(label) }}
-    </div>
-  );
-};
+export default useClickLike;
 ```
 
 ## 三、组件通信
@@ -296,7 +294,7 @@ const List = (props) => {
 
 ```jsx
 // 父组件
-let [params, setParams] = useState({ type: "" });
+let [params, setParams] = useState({ type: '' });
 <LabelSelect params={params} setParams={setParams} />;
 ```
 
@@ -306,7 +304,7 @@ const LabelSelect = (props) => {
   let { params, setParams } = props;
 
   const handleLabel = () => {
-    params.type = "js";
+    params.type = 'js';
     setParams({ ...params });
   };
 };
@@ -317,7 +315,7 @@ const LabelSelect = (props) => {
 - 通过在子组件中调用该方法，并传入参数`{ ...params }`
 - 父组件就能接收子组件传入的参数，更新父组件的`params`数据
 
-## 四、react-router v6 新特性
+## 四、React-Router V6 新特性
 
 1. `<Switch>`重命名为`<Routes>`，功能保持不变
 2. `<Route>`的新特性变更，`component/render`属性被`element`属性替代
@@ -328,9 +326,9 @@ const LabelSelect = (props) => {
 
 ```jsx
 // tabbar/index.jsx
-import { useNavigate, useLocation } from "react-router-dom";
-import { TabBar } from "antd-mobile";
-import { Outlet } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { TabBar } from 'antd-mobile';
+import { Outlet } from 'react-router-dom';
 
 const FixedBottomNavigation = () => {
   let navigate = useNavigate();
@@ -347,12 +345,11 @@ const FixedBottomNavigation = () => {
       <Outlet />
 
       <TabBar
-        className="tabbar-footer btm-btn-bar-ipx"
+        className="tabbar-footer"
         activeKey={pathname}
         onChange={(value) => {
           setRouteActive(value);
-        }}
-      >
+        }}>
         {tabs.map((item) => (
           <TabBar.Item key={item.path} icon={item.icon} title={item.title} />
         ))}
@@ -365,14 +362,14 @@ export default FixedBottomNavigation;
 
 ```jsx
 // router/index.jsx
-import { lazy, Suspense } from "react";
-import { Loading } from "antd-mobile";
-import { useRoutes } from "react-router-dom";
-import Tabbar from "@/components/tabbar";
+import { lazy, Suspense } from 'react';
+import { Loading } from 'antd-mobile';
+import { useRoutes } from 'react-router-dom';
+import Tabbar from '@/components/tabbar';
 
-const Home = lazy(() => import("@/pages/home"));
-const Label = lazy(() => import("@/pages/label"));
-const Article = lazy(() => import("@/pages/article"));
+const Home = lazy(() => import('@/pages/home'));
+const Label = lazy(() => import('@/pages/label'));
+const Article = lazy(() => import('@/pages/article'));
 // 路由懒加载，需配合Suspense使用
 const lazyLoad = (children) => {
   return <Suspense fallback={<Loading />}>{children}</Suspense>;
@@ -380,33 +377,33 @@ const lazyLoad = (children) => {
 const AppRouter = () => {
   return useRoutes([
     {
-      path: "/",
+      path: '/',
       element: <Tabbar />,
       children: [
         {
-          path: "home",
+          path: 'home',
           element: lazyLoad(<Home />),
         },
         {
-          path: "label",
+          path: 'label',
           element: lazyLoad(<Label />),
         },
       ],
     },
-    { path: "/article/detail/:id", element: lazyLoad(<Article />) },
+    { path: '/article/detail/:id', element: lazyLoad(<Article />) },
   ]);
 };
 export default AppRouter;
 ```
 
-## 四、react-redux 使用
+## 四、React-Redux 使用
 
 ```jsx
 // redux/store,js
-import { createStore, applyMiddleware } from "redux";
-import reducer from "./reducers";
-import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { createStore, applyMiddleware } from 'redux';
+import reducer from './reducers';
+import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 export default createStore(
   reducer,
@@ -419,8 +416,8 @@ export default createStore(
 
 ```jsx
 // redux/reducers/index.js
-import { combineReducers } from "redux";
-import label from "./label";
+import { combineReducers } from 'redux';
+import label from './label';
 
 export default combineReducers({
   label,
@@ -429,13 +426,11 @@ export default combineReducers({
 
 - `combineReducers`是用来合并多个`reducer`，并统一暴露出去
 
-自定义一个获取标签数据的 hook，组件中需要引用标签数据的，将其引入；组件更新时会先从 redux 拿数据，无数据的话就重新发起异步请求，此举是为了防止页面刷新，redux 里的数据丢失。
-
 ```jsx
 // useHooks/useGetLabelList.js
-import { useEffect } from "react";
-import { getLabelList } from "@/redux/actions/label";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from 'react';
+import { getLabelList } from '@/redux/actions/label';
+import { useSelector, useDispatch } from 'react-redux';
 
 const useGetLabelList = () => {
   let labelList = useSelector((state) => state.label);
@@ -453,6 +448,8 @@ export default useGetLabelList;
 
 - `useSelector`获取存储在 redux 的数据
 - 要在 redux 进行异步请求，就需要通过`useDispatch`来分发`actions`
+- 自定义一个获取标签数据的 hook，组件中需要引用标签数据的，将其引入
+- 组件更新时会先从 redux 拿数据，无数据的话就重新发起异步请求，此举是为了防止页面刷新，redux 里的数据丢失
 
 ## 五、配置代理
 
@@ -463,16 +460,16 @@ export default useGetLabelList;
 
 ```js
 // src/setupProxy.js
-const { createProxyMiddleware } = require("http-proxy-middleware");
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = (app) => {
   app.use(
-    createProxyMiddleware("/client_api", {
-      target: "http://localhost:3000/client_api/", // 设置目标服务器host
+    createProxyMiddleware('/client_api', {
+      target: 'http://localhost:3000/client_api/', // 设置目标服务器host
       secure: false,
       changeOrigin: true, // 是否需要改变原始主机头为目标URL
       pathRewrite: {
-        "^/client_api": "/", // 重写目标url路径，将client_api前缀去掉
+        '^/client_api': '/', // 重写目标url路径，将client_api前缀去掉
       },
     })
   );
@@ -484,7 +481,7 @@ module.exports = (app) => {
 ### 1. React.memo
 
 ```jsx
-import React from "react";
+import React from 'react';
 
 const SvgIcon = (prop) => {
   let iconName = `#${prop.name}`;
@@ -566,10 +563,10 @@ export default {
   auth,
   log,
   mongodb: {
-    username: "wall", // 数据库用户
+    username: 'wall', // 数据库用户
     pwd: 123456, // 数据库密码
-    address: "localhost:27017",
-    db: "wallBlog", // 数据库名
+    address: 'localhost:27017',
+    db: 'wallBlog', // 数据库名
   },
 };
 ```
@@ -587,7 +584,7 @@ export default {
 
 4. 进入`server`目录，安装依赖，并开启服务
 
-```js
+```bash
 cd server // 进入server目录
 yarn // 安装依赖包
 yarn server // 开启后端接口，成功了便会提示数据库连接成功
@@ -595,20 +592,21 @@ yarn server // 开启后端接口，成功了便会提示数据库连接成功
 
 # 注意事项
 
-### 1. 将 node-sass 换成 dart-sass
+### 1. 将 Node-Sass 换成 Dart-Sass
 
 `node v16`不支持`node-sass`，所以需要换成`dart-sass`。但是 react 目前只支持 node-sass，所以需要通过`package.json`文件的别名配置（`npm 6.9`提供了 `package-aliasing`）， 在安装 node-sass 的时候将内容偷梁换柱成 dart-sass
 
 - 安装：`yarn add node-sass@npm:dart-sass -S`
 - [具体可查看 node-sass 能支持的 node 版本](https://github.com/sass/node-sass/releases/tag/v5.0.0)
 
-### 2. 全局引入 sass 样式
+### 2. 全局引入 Sass 样式
 
 - 安装：`yarn add sass-resources-loader -S`
-- 修改 webpack.config.js 配置，找到配置 sass 文件的地方，引入全局样式
+- 修改 `config/webpack.config.js` 配置，找到配置 sass 文件的地方，引入全局样式
 - 在`getStyleLoaders`方法后面拼接上 `sass-resources-loader` 的配置
 
 ```js
+// config/webpack.config.js
 {
   test: sassRegex,
   exclude: sassModuleRegex,
@@ -632,4 +630,43 @@ yarn server // 开启后端接口，成功了便会提示数据库连接成功
   ]),
   sideEffects: true,
 },
+```
+
+### 3. CSS Modules
+
+CSS Modules 允许通过自动创建 `[filename]\_[classname]\_\_[hash]` 格式的唯一 classname 来确定 CSS 的作用域，防止命名冲突，约定使用 `[name].module.css` 文件命名
+
+配合 sass 使用的话，只要把`.css`后缀名改为`.scss`即可，类似 vue 中的`scoped`，给每个样式文件添加唯一的`hash`值
+
+```jsx
+import style from './intro.module.scss';
+
+const Intro = () => {
+  return (
+    <>
+      <div className={style['intro-container']}>
+        <div className={style['intro-box']}>
+          <div className={style['intro-title']}>WALL-BLOG</div>
+        </div>
+      </div>
+    </>
+  );
+};
+export default Intro;
+```
+
+- 将样式文件中的每个`className`聚合成一个 `style` 对象，通过模块化形式导入
+- 再通过 style 对象去引用每个 className
+- 这种形式挺繁琐的，可读性也不高，相比之下 vue 中的一个 scoped 即可解决问题，所以该项目就不打算实现了
+
+### 4. iPhone X 系列底部加高
+
+通过媒体查询出 iPhone X 系列的机型，给其底部加高，呈现更友好的用户界面
+
+```scss
+@media #{$ipxMedia} {
+  .common-pb {
+    padding-bottom: calc(62px + 34px) !important;
+  }
+}
 ```

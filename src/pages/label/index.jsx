@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgIcon from '@/components/svgIcon';
 import { Tabs, Search } from 'antd-mobile';
 import List from '../home/components/list';
 import LabelSelect from './components/labelSelect';
@@ -33,7 +34,7 @@ const Label = () => {
   };
 
   return (
-    <div className="app-container">
+    <div className="common-pb">
       <Search
         placeholder="请输入搜索关键词"
         showCancelButton
@@ -53,7 +54,7 @@ const Label = () => {
           <Tabs.Tab title={item.title} key={item.key} />
         ))}
       </Tabs>
-      <List hideTitle={true} params={params}></List>
+      <List hideTitle={true} params={params} />
     </div>
   );
 };

@@ -45,7 +45,7 @@ const FixedBottomNavigation = () => {
     <>
       <Outlet />
       <TabBar
-        className="tabbar-footer btm-btn-bar-ipx"
+        className="tabbar-footer tabbar-pb"
         activeKey={pathname}
         onChange={(value) => {
           setRouteActive(value);

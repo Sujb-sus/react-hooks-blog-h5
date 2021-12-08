@@ -74,7 +74,7 @@ const Message = () => {
   };
 
   return (
-    <div className="app-container">
+    <div className="common-pb">
       <CommentEditor submitSuccess={addMessage} ref={editorRef} />
       <div className="comment-list">
         <div className="side-title">

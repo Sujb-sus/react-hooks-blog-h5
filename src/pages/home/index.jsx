@@ -6,7 +6,7 @@ import useGetLabelList from '@/useHooks/useGetLabelList';
 const Home = () => {
   useGetLabelList();
   return (
-    <div className="app-container">
+    <div className="common-pb">
       <Intro></Intro>
       <List></List>
     </div>

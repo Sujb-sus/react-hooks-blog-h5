@@ -11,15 +11,12 @@ const useGetLabelColor = () => {
   const getLabelColor = useCallback(
     (labelName) => {
       if (labelList.length) {
-        let labelIndex = 0;
-        labelList.forEach((item, index) => {
-          if (labelName === item.label) {
-            labelIndex = index;
-          }
-        });
+        let labelIndex = labelList.findIndex(
+          (item) => item.label === labelName
+        );
         return labelList[labelIndex].bgColor;
       }
-      return '';
+      return 'rgba(70, 70, 70, 0.9)';
     },
     [labelList]
   );

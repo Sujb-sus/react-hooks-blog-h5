@@ -60,25 +60,17 @@ svg {
     width: 80vw;
   }
 }
-
-/* iPhone X系列底部加高*/
+.common-pb {
+  padding-bottom: 62px;
+}
+/* iPhone X系列底部加高 */
 @media #{$ipxMedia} {
-  .app-container {
-    padding-bottom: calc(50px + 34px) !important;
+  .common-pb {
+    padding-bottom: calc(62px + 34px) !important;
   }
 }
-
-@supports (bottom: env(safe-area-inset-bottom)) {
-  .btm-btn-bar-ipx {
-    bottom: env(safe-area-inset-bottom) !important;
-    &:after {
-      content: '';
-      height: env(safe-area-inset-bottom);
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: #fff;
-    }
+@media #{$ipxMedia} {
+  .tabbar-pb {
+    padding-bottom: 34px !important;
   }
 }

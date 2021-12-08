@@ -15,7 +15,7 @@ const useClickLike = (requestApi) => {
     [isLikeSuccess]
   );
   // 点赞高亮
-  const getLikesColor = useMemo(() => isLikeSuccess, [isLikeSuccess]);
+  const likeColor = useMemo(() => isLikeSuccess, [isLikeSuccess]);
 
   // 点赞事件
   const handleLikes = (e, id) => {
@@ -34,7 +34,7 @@ const useClickLike = (requestApi) => {
 
   return {
     getLikesNumber,
-    getLikesColor,
+    likeColor,
     handleLikes,
   };
 };
