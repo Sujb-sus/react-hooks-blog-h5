@@ -8,9 +8,11 @@ import '@/styles/markdown/index.scss';
 import { useParams } from 'react-router-dom';
 import useGetLabelColor from '@/useHooks/useGetLabelColor';
 import useGetLabelList from '@/useHooks/useGetLabelList';
+import useDocumentTitle from '@/useHooks/useDocumentTitle';
 
 const Article = () => {
   useGetLabelList();
+  useDocumentTitle('文章详情');
   let { getLabelColor } = useGetLabelColor();
   let params = useParams();
   let id = params.id;

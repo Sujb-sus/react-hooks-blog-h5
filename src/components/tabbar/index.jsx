@@ -9,6 +9,7 @@ import {
 import { TabBar } from 'antd-mobile';
 import { Outlet } from 'react-router-dom';
 import './tabbar.scss';
+import useDocumentTitle from '@/useHooks/useDocumentTitle';
 
 const FixedBottomNavigation = () => {
   let tabs = [
@@ -36,7 +37,8 @@ const FixedBottomNavigation = () => {
   let navigate = useNavigate();
   let location = useLocation();
   let { pathname } = location;
-
+  let index = tabs.findIndex((item) => item.path === pathname);
+  useDocumentTitle(tabs[index].title);
   // 路由跳转
   const setRouteActive = (path) => {
     navigate(path);

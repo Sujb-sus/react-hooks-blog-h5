@@ -632,7 +632,19 @@ yarn server // 开启后端接口，成功了便会提示数据库连接成功
 },
 ```
 
-### 3. CSS Modules
+### 3. iPhone X 系列底部加高
+
+通过媒体查询出 iPhone X 系列的机型，给其底部加高，呈现更友好的用户界面
+
+```scss
+@media #{$ipxMedia} {
+  .common-pb {
+    padding-bottom: calc(62px + 34px) !important;
+  }
+}
+```
+
+### 4. CSS Modules
 
 CSS Modules 允许通过自动创建 `[filename]\_[classname]\_\_[hash]` 格式的唯一 classname 来确定 CSS 的作用域，防止命名冲突，约定使用 `[name].module.css` 文件命名
 
@@ -657,16 +669,5 @@ export default Intro;
 
 - 将样式文件中的每个`className`聚合成一个 `style` 对象，通过模块化形式导入
 - 再通过 style 对象去引用每个 className
-- 这种形式挺繁琐的，可读性也不高，相比之下 vue 中的一个 scoped 即可解决问题，所以该项目就不打算实现了
-
-### 4. iPhone X 系列底部加高
-
-通过媒体查询出 iPhone X 系列的机型，给其底部加高，呈现更友好的用户界面
-
-```scss
-@media #{$ipxMedia} {
-  .common-pb {
-    padding-bottom: calc(62px + 34px) !important;
-  }
-}
-```
+- 这种形式挺繁琐的，可读性也不高，相比之下 vue 中的一个 scoped 即可解决问题
+- 本项目就不打算实现了，别问，问就是懒...
