@@ -41,7 +41,7 @@
           .content-title {
             color: $strongFontColor;
             font-size: 16px;
-            @include singleText();
+            @include multiText(1);
           }
           .content-desc {
             color: $subFontColor;
