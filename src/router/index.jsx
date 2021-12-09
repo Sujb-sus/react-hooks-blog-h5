@@ -19,11 +19,10 @@ const AppRouter = () => {
   return useRoutes([
     {
       path: '/',
-      exact: true,
       element: <Tabbar />,
       children: [
         {
-          path: 'home',
+          index: true,
           element: lazyLoad(<Home />),
         },
         {

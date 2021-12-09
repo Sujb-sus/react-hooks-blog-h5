@@ -14,7 +14,7 @@ import useDocumentTitle from '@/useHooks/useDocumentTitle';
 const FixedBottomNavigation = () => {
   let tabs = [
     {
-      path: '/home',
+      path: '/',
       title: '首页',
       icon: <AppOutline />,
     },
@@ -38,7 +38,7 @@ const FixedBottomNavigation = () => {
   let location = useLocation();
   let { pathname } = location;
   let index = tabs.findIndex((item) => item.path === pathname);
-  useDocumentTitle(tabs[index].title);
+  useDocumentTitle(tabs[index]?.title);
   // 路由跳转
   const setRouteActive = (path) => {
     navigate(path);
