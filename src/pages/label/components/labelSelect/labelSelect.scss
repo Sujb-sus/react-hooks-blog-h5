@@ -5,6 +5,7 @@
   left: 0;
   right: 0;
   z-index: 99;
+  height: 51px;
   background-color: #fff;
   @include flex(flex-start);
   &::-webkit-scrollbar {
@@ -12,6 +13,7 @@
   }
   padding: 12px 16px 0;
   .label-text {
+    flex-shrink: 0;
     margin: 4px;
     box-sizing: border-box;
     font-size: 14px;
