@@ -8,13 +8,13 @@
 
 # 项目预览
 
-<img src="./public/index.jpg" height="500px"><img src="./public/label.jpg" height="500px">
+<img src="./static/index.jpg" height="500px"><img src="./static/label.jpg" height="500px">
 
-<img src="./public/detail.jpg" height="500px"><img src="./public/message.jpg" height="500px">
+<img src="./static/detail.jpg" height="500px"><img src="./static/message.jpg" height="500px">
 
 # 项目结构
 
-<img src="./public/wall-blog-h5.png">
+<img src="./static/wall-blog-h5.png">
 
 # 技术运用
 
@@ -28,7 +28,7 @@
 2. 在`src/index.js`导入`lib-flexible`
 
 ```js
-import "lib-flexible";
+import 'lib-flexible';
 ```
 
 3. 在`config/webpack.config.js`配置 postcss-px2rem-exclude
@@ -197,9 +197,8 @@ useMemo 用于性能优化，通过记忆值来避免在每个渲染上执⾏高
 - deps 为 state 组成的依赖数组，当对应的 state 发生变化时，才会重新计算(可以依赖另外一个 useMemo 返回的值)
 
 ```jsx
-// 点赞高亮
 const likeColor = useMemo(() => isLikeSuccess, [isLikeSuccess]);
-return <div className={`footer-item ${likeColor ? "icon-likes" : ""}`}></div>;
+return <div className={`footer-item ${likeColor && 'icon-likes'}`}></div>;
 ```
 
 ### 5. useCallback Hook
@@ -227,44 +226,43 @@ return (
 
 ```jsx
 // useHooks/useClickLikes.js
-import { useState, useMemo, useCallback, useRef } from "react";
-import base from "@/utils/base";
+import { useState, useCallback } from 'react';
+import base from '@/utils/base';
 /**
  * 封装点赞逻辑
  * @requestApi api请求的path
  * @description 点赞文章、留言
  */
 const useClickLike = (requestApi) => {
-  let [isLikeSuccess, setLikeSuccess] = useState(false); // 点赞操作是否成功
-  let likeCount = useRef(0); // 点赞次数
-
+  let [likeList, setLikeList] = useState([]); // 已点过赞的文章列表
   // 获取点赞数
   const getLikesNumber = useCallback(
-    (likes) => (isLikeSuccess ? likes + 1 : likes),
-    [isLikeSuccess]
+    (id, likes) => (likeList.includes(id) ? likes + 1 : likes),
+    [likeList]
   );
   // 点赞高亮
-  const likeColor = useMemo(() => isLikeSuccess, [isLikeSuccess]);
-
+  const getLikeColor = useCallback((id) => likeList.includes(id), [likeList]);
   // 点赞事件
   const handleLikes = (e, id) => {
     e.stopPropagation();
-    likeCount.current++;
-    // 奇数点赞+1，偶数取消点赞
-    requestApi({ _id: id, isLike: !!!(likeCount.current % 2) })
+    likeList.includes(id)
+      ? likeList.splice(likeList.indexOf(id), 1)
+      : likeList.push(id);
+
+    requestApi({ _id: id, isLike: !likeList.includes(id) })
       .then(() => {
-        setLikeSuccess(!!(likeCount.current % 2));
+        setLikeList([...likeList]);
       })
       .catch(() => {
-        setLikeSuccess(false);
-        base.toast("点赞失败");
+        base.toast('点赞失败');
       });
   };
 
   return {
     getLikesNumber,
-    likeColor,
+    getLikeColor,
     handleLikes,
+    setLikeList,
   };
 };
 export default useClickLike;
@@ -293,7 +291,7 @@ const List = (props) => {
 
 ```jsx
 // 父组件
-let [params, setParams] = useState({ type: "" });
+let [params, setParams] = useState({ type: '' });
 <LabelSelect params={params} setParams={setParams} />;
 ```
 
@@ -303,7 +301,7 @@ const LabelSelect = (props) => {
   let { params, setParams } = props;
 
   const handleLabel = () => {
-    params.type = "js";
+    params.type = 'js';
     setParams({ ...params });
   };
 };
@@ -325,9 +323,9 @@ const LabelSelect = (props) => {
 
 ```jsx
 // tabbar/index.jsx
-import { useNavigate, useLocation } from "react-router-dom";
-import { TabBar } from "antd-mobile";
-import { Outlet } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { TabBar } from 'antd-mobile';
+import { Outlet } from 'react-router-dom';
 
 const FixedBottomNavigation = () => {
   let navigate = useNavigate();
@@ -348,8 +346,7 @@ const FixedBottomNavigation = () => {
         activeKey={pathname}
         onChange={(value) => {
           setRouteActive(value);
-        }}
-      >
+        }}>
         {tabs.map((item) => (
           <TabBar.Item key={item.path} icon={item.icon} title={item.title} />
         ))}
@@ -362,35 +359,34 @@ export default FixedBottomNavigation;
 
 ```jsx
 // router/index.jsx
-import { lazy, Suspense } from "react";
-import { Loading } from "antd-mobile";
-import { useRoutes } from "react-router-dom";
-import Tabbar from "@/components/tabbar";
+import { lazy, Suspense } from 'react';
+import { useRoutes } from 'react-router-dom';
+import Tabbar from '@/components/tabbar';
 
-const Home = lazy(() => import("@/pages/home"));
-const Label = lazy(() => import("@/pages/label"));
-const Article = lazy(() => import("@/pages/article"));
+const Home = lazy(() => import('@/pages/home'));
+const Label = lazy(() => import('@/pages/label'));
+const Article = lazy(() => import('@/pages/article'));
 // 路由懒加载，需配合Suspense使用
 const lazyLoad = (children) => {
-  return <Suspense fallback={<Loading />}>{children}</Suspense>;
+  return <Suspense fallback={''}>{children}</Suspense>;
 };
 const AppRouter = () => {
   return useRoutes([
     {
-      path: "/",
+      path: '/',
       element: <Tabbar />,
       children: [
         {
-          path: "home",
+          index: true,
           element: lazyLoad(<Home />),
         },
         {
-          path: "label",
+          path: 'label',
           element: lazyLoad(<Label />),
         },
       ],
     },
-    { path: "/article/detail/:id", element: lazyLoad(<Article />) },
+    { path: '/article/detail/:id', element: lazyLoad(<Article />) },
   ]);
 };
 export default AppRouter;
@@ -400,10 +396,10 @@ export default AppRouter;
 
 ```jsx
 // redux/store,js
-import { createStore, applyMiddleware } from "redux";
-import reducer from "./reducers";
-import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { createStore, applyMiddleware } from 'redux';
+import reducer from './reducers';
+import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 export default createStore(
   reducer,
@@ -416,8 +412,8 @@ export default createStore(
 
 ```jsx
 // redux/reducers/index.js
-import { combineReducers } from "redux";
-import label from "./label";
+import { combineReducers } from 'redux';
+import label from './label';
 
 export default combineReducers({
   label,
@@ -428,9 +424,9 @@ export default combineReducers({
 
 ```jsx
 // useHooks/useGetLabelList.js
-import { useEffect } from "react";
-import { getLabelList } from "@/redux/actions/label";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from 'react';
+import { getLabelList } from '@/redux/actions/label';
+import { useSelector, useDispatch } from 'react-redux';
 
 const useGetLabelList = () => {
   let labelList = useSelector((state) => state.label);
@@ -460,16 +456,16 @@ export default useGetLabelList;
 
 ```js
 // src/setupProxy.js
-const { createProxyMiddleware } = require("http-proxy-middleware");
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = (app) => {
   app.use(
-    createProxyMiddleware("/client_api", {
-      target: "http://localhost:3000/client_api/", // 设置目标服务器host
+    createProxyMiddleware('/client_api', {
+      target: 'http://localhost:3000/client_api/', // 设置目标服务器host
       secure: false,
       changeOrigin: true, // 是否需要改变原始主机头为目标URL
       pathRewrite: {
-        "^/client_api": "/", // 重写目标url路径，将client_api前缀去掉
+        '^/client_api': '/', // 重写目标url路径，将client_api前缀去掉
       },
     })
   );
@@ -481,7 +477,7 @@ module.exports = (app) => {
 ### 1. React.memo
 
 ```jsx
-import React from "react";
+import React from 'react';
 
 const SvgIcon = (prop) => {
   let iconName = `#${prop.name}`;
@@ -563,10 +559,10 @@ export default {
   auth,
   log,
   mongodb: {
-    username: "wall", // 数据库用户
+    username: 'wall', // 数据库用户
     pwd: 123456, // 数据库密码
-    address: "localhost:27017",
-    db: "wallBlog", // 数据库名
+    address: 'localhost:27017',
+    db: 'wallBlog', // 数据库名
   },
 };
 ```
@@ -651,14 +647,14 @@ CSS Modules 允许通过自动创建 `[filename]\_[classname]\_\_[hash]` 格式�
 配合 sass 使用的话，只要把`.css`后缀名改为`.scss`即可，类似 vue 中的`scoped`，给每个样式文件添加唯一的`hash`值
 
 ```jsx
-import style from "./intro.module.scss";
+import style from './intro.module.scss';
 
 const Intro = () => {
   return (
     <>
-      <div className={style["intro-container"]}>
-        <div className={style["intro-box"]}>
-          <div className={style["intro-title"]}>WALL-BLOG</div>
+      <div className={style['intro-container']}>
+        <div className={style['intro-box']}>
+          <div className={style['intro-title']}>WALL-BLOG</div>
         </div>
       </div>
     </>

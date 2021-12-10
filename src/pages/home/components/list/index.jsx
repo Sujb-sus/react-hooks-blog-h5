@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { InfiniteScroll, PullToRefresh } from "antd-mobile";
-import SvgIcon from "@/components/svgIcon";
-import NoData from "@/components/noData";
-import ListItem from "../listItem";
-import { apiGetBlogList, apiUpdateLikes } from "@/api/blog";
-import useClickLikes from "@/useHooks/useClickLikes";
-import base from "@/utils/base";
-import "./list.scss";
+import React, { useState, useEffect, useRef } from 'react';
+import { InfiniteScroll, PullToRefresh } from 'antd-mobile';
+import SvgIcon from '@/components/svgIcon';
+import NoData from '@/components/noData';
+import ListItem from '../listItem';
+import { apiGetBlogList, apiUpdateLikes } from '@/api/blog';
+import useClickLikes from '@/useHooks/useClickLikes';
+import base from '@/utils/base';
+import './list.scss';
 
 const List = (props) => {
   let { getLikesNumber, getLikeColor, handleLikes, setLikeList } =
@@ -31,7 +31,8 @@ const List = (props) => {
     try {
       if (reload) {
         base.showLoading();
-        pageindex.current = 1; // 下拉刷新重置pageindex
+        // 下拉刷新重置pageindex
+        pageindex.current = 1;
       }
       const res = await apiGetBlogList({
         pageindex: pageindex.current,
@@ -46,18 +47,30 @@ const List = (props) => {
       setHasMore(pageindex.current * pagesize < res?.data?.total);
       pageindex.current++;
     } catch (error) {
-      console.log("error", error);
+      console.log('error', error);
     }
   };
   // 下拉刷新
   const handleRefresh = () => {
+    // 清空已点过赞列表
     setLikeList([]);
     handleLoadMore();
   };
+  // 自定义滚动内容
+  const InfiniteScrollContent = ({ hasMore }) => {
+    return (
+      <>
+        {pageindex.current > 1 &&
+          (hasMore ? <span>Loading</span> : <span>--- 我是有底线的 ---</span>)}
+      </>
+    );
+  };
 
   return (
-    <div className="list-container">
-      {!props.hideTitle && (
+    <div
+      className="list-container"
+      style={{ paddingTop: !props.hideTitle && '0' }}>
+      {!props.hideTitle && total.current > 0 && (
         <div className="list-title">
           <SvgIcon name="icon-label01" />
           <span>最新文章({total.current})</span>
@@ -77,8 +90,9 @@ const List = (props) => {
 
         <InfiniteScroll
           loadMore={() => handleLoadMore(false)}
-          hasMore={hasMore}
-        />
+          hasMore={hasMore}>
+          <InfiniteScrollContent hasMore={hasMore} />
+        </InfiniteScroll>
       </PullToRefresh>
       {!total.current && <NoData />}
     </div>

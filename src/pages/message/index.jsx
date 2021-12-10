@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
-import SvgIcon from "@/components/svgIcon";
-import CommentItem from "./components/commentItem";
-import CommentEditor from "./components/commentEditor";
-import { InfiniteScroll } from "antd-mobile";
+import React, { useState, useEffect, useRef } from 'react';
+import SvgIcon from '@/components/svgIcon';
+import CommentItem from './components/commentItem';
+import CommentEditor from './components/commentEditor';
+import { InfiniteScroll } from 'antd-mobile';
 import {
   apiGetMessageList,
   apiGetReplyCount,
   apiAddMessage,
   apiUpdateLikes,
-} from "@/api/message";
-import useClickLikes from "@/useHooks/useClickLikes";
-import base from "@/utils/base";
-import NoData from "@/components/noData";
-import "./message.scss";
+} from '@/api/message';
+import useClickLikes from '@/useHooks/useClickLikes';
+import base from '@/utils/base';
+import NoData from '@/components/noData';
+import './message.scss';
 
 const Message = () => {
   let { getLikesNumber, getLikeColor, handleLikes, setLikeList } =
@@ -59,7 +59,7 @@ const Message = () => {
       setHasMore(pageindex.current * pagesize < res?.data?.total);
       pageindex.current++;
     } catch (error) {
-      console.log("error", error);
+      console.log('error', error);
     }
   };
   // 获取回复数量
@@ -81,16 +81,28 @@ const Message = () => {
         base.hideLoading();
       });
   };
+  // 自定义滚动内容
+  const InfiniteScrollContent = ({ hasMore }) => {
+    return (
+      <>
+        {pageindex.current > 1 &&
+          (hasMore ? <span>Loading</span> : <span>--- 我是有底线的 ---</span>)}
+      </>
+    );
+  };
 
   return (
     <div className="common-pb">
       <CommentEditor submitSuccess={addMessage} ref={editorRef} />
       <div className="comment-list">
-        <div className="side-title">
-          <SvgIcon name="icon-comment"></SvgIcon>
-          <span>{total.current}</span>条评论， <span>{replyCount.current}</span>
-          条回复
-        </div>
+        {total.current > 0 && (
+          <div className="side-title">
+            <SvgIcon name="icon-comment"></SvgIcon>
+            <span>{total.current}</span>条评论，{' '}
+            <span>{replyCount.current}</span>
+            条回复
+          </div>
+        )}
         {total.current > 0 &&
           commentList.map((item) => (
             <CommentItem
@@ -102,7 +114,9 @@ const Message = () => {
               handleLikes={handleLikes}
             />
           ))}
-        <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore} />
+        <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore}>
+          <InfiniteScrollContent hasMore={hasMore} />
+        </InfiniteScroll>
         {!total.current && <NoData />}
       </div>
     </div>
