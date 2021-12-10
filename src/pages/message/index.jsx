@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import SvgIcon from '@/components/svgIcon';
-import CommentItem from './components/commentItem';
-import CommentEditor from './components/commentEditor';
-import { InfiniteScroll } from 'antd-mobile';
+import React, { useState, useEffect, useRef } from "react";
+import SvgIcon from "@/components/svgIcon";
+import CommentItem from "./components/commentItem";
+import CommentEditor from "./components/commentEditor";
+import { InfiniteScroll } from "antd-mobile";
 import {
   apiGetMessageList,
   apiGetReplyCount,
   apiAddMessage,
-} from '@/api/message';
-import base from '@/utils/base';
-import NoData from '@/components/noData';
-import './message.scss';
+  apiUpdateLikes,
+} from "@/api/message";
+import useClickLikes from "@/useHooks/useClickLikes";
+import base from "@/utils/base";
+import NoData from "@/components/noData";
+import "./message.scss";
 
 const Message = () => {
+  let { getLikesNumber, getLikeColor, handleLikes, setLikeList } =
+    useClickLikes(apiUpdateLikes);
+
   let [commentList, setCommentList] = useState([]);
   let [hasMore, setHasMore] = useState(false);
   let editorRef = useRef();
@@ -29,6 +34,10 @@ const Message = () => {
     pageindex.current = 1;
     base.showLoading();
     Promise.all([handleLoadMore(), getReplyCount()])
+      .then(() => {
+        // 清空已点过赞列表
+        setLikeList([]);
+      })
       .catch((err) => {
         console.log(err);
       })
@@ -50,7 +59,7 @@ const Message = () => {
       setHasMore(pageindex.current * pagesize < res?.data?.total);
       pageindex.current++;
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
     }
   };
   // 获取回复数量
@@ -87,7 +96,11 @@ const Message = () => {
             <CommentItem
               commentItem={item}
               key={item._id}
-              initMessageData={initData}></CommentItem>
+              initMessageData={initData}
+              getLikesNumber={getLikesNumber}
+              getLikeColor={getLikeColor}
+              handleLikes={handleLikes}
+            />
           ))}
         <InfiniteScroll loadMore={handleLoadMore} hasMore={hasMore} />
         {!total.current && <NoData />}

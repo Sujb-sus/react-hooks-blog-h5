@@ -1,13 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { InfiniteScroll, PullToRefresh } from 'antd-mobile';
-import SvgIcon from '@/components/svgIcon';
-import NoData from '@/components/noData';
-import ListItem from '../listItem';
-import { apiGetBlogList } from '@/api/blog';
-import base from '@/utils/base';
-import './list.scss';
+import React, { useState, useEffect, useRef } from "react";
+import { InfiniteScroll, PullToRefresh } from "antd-mobile";
+import SvgIcon from "@/components/svgIcon";
+import NoData from "@/components/noData";
+import ListItem from "../listItem";
+import { apiGetBlogList, apiUpdateLikes } from "@/api/blog";
+import useClickLikes from "@/useHooks/useClickLikes";
+import base from "@/utils/base";
+import "./list.scss";
 
 const List = (props) => {
+  let { getLikesNumber, getLikeColor, handleLikes, setLikeList } =
+    useClickLikes(apiUpdateLikes);
+
   let [list, setList] = useState([]);
   let [hasMore, setHasMore] = useState(false);
   let total = useRef(-1);
@@ -18,6 +22,7 @@ const List = (props) => {
   useEffect(() => {
     // params参数变化，需要重置pageindex
     pageindex.current !== 1 && (pageindex.current = 1);
+    setLikeList([]);
     handleLoadMore();
   }, [props.params]);
 
@@ -41,8 +46,13 @@ const List = (props) => {
       setHasMore(pageindex.current * pagesize < res?.data?.total);
       pageindex.current++;
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
     }
+  };
+  // 下拉刷新
+  const handleRefresh = () => {
+    setLikeList([]);
+    handleLoadMore();
   };
 
   return (
@@ -53,9 +63,17 @@ const List = (props) => {
           <span>最新文章({total.current})</span>
         </div>
       )}
-      <PullToRefresh onRefresh={handleLoadMore}>
+      <PullToRefresh onRefresh={handleRefresh}>
         {total.current > 0 &&
-          list.map((item) => <ListItem item={item} key={item._id} />)}
+          list.map((item) => (
+            <ListItem
+              item={item}
+              key={item._id}
+              getLikesNumber={getLikesNumber}
+              getLikeColor={getLikeColor}
+              handleLikes={handleLikes}
+            />
+          ))}
 
         <InfiniteScroll
           loadMore={() => handleLoadMore(false)}

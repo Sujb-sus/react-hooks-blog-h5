@@ -1,22 +1,20 @@
-import React from 'react';
-import SvgIcon from '@/components/svgIcon';
-import { formatTime, formatNumber } from '@/utils/filter';
-import { apiUpdateLikes } from '@/api/blog';
-import useClickLikes from '@/useHooks/useClickLikes';
-import useGetLabelColor from '@/useHooks/useGetLabelColor';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import SvgIcon from "@/components/svgIcon";
+import { formatTime, formatNumber } from "@/utils/filter";
+import useGetLabelColor from "@/useHooks/useGetLabelColor";
+import { useNavigate } from "react-router-dom";
 
 const ListItem = (props) => {
   let { item } = props;
-  let { getLikesNumber, likeColor, handleLikes } =
-    useClickLikes(apiUpdateLikes);
+  let { getLikesNumber, getLikeColor, handleLikes } = props;
   let { getLabelColor } = useGetLabelColor();
   let navigate = useNavigate();
 
   return (
     <div
       className="list-item"
-      onClick={() => navigate(`/article/detail/${item._id}`)}>
+      onClick={() => navigate(`/article/detail/${item._id}`)}
+    >
       <div className="item-content">
         <img src={item.fileCoverImgUrl} />
         <div className="content-box">
@@ -29,7 +27,8 @@ const ListItem = (props) => {
               <div
                 className="label-text"
                 style={{ backgroundColor: getLabelColor(label) }}
-                key={label}>
+                key={label}
+              >
                 {label}
               </div>
             ))}
@@ -46,11 +45,14 @@ const ListItem = (props) => {
           <div className="footer-text">{formatNumber(item.pv)}</div>
         </div>
         <div
-          className={`footer-item ${likeColor ? 'icon-likes' : ''}`}
-          onClick={(e) => handleLikes(e, item._id)}>
+          className={`footer-item ${
+            getLikeColor(item._id) ? "icon-likes" : ""
+          }`}
+          onClick={(e) => handleLikes(e, item._id)}
+        >
           <SvgIcon name="icon-like02" />
           <div className="footer-text">
-            {formatNumber(getLikesNumber(item.likes))}
+            {formatNumber(getLikesNumber(item._id, item.likes))}
           </div>
         </div>
       </div>

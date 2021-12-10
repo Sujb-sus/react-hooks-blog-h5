@@ -28,7 +28,7 @@
 2. 在`src/index.js`导入`lib-flexible`
 
 ```js
-import 'lib-flexible';
+import "lib-flexible";
 ```
 
 3. 在`config/webpack.config.js`配置 postcss-px2rem-exclude
@@ -199,11 +199,7 @@ useMemo 用于性能优化，通过记忆值来避免在每个渲染上执⾏高
 ```jsx
 // 点赞高亮
 const likeColor = useMemo(() => isLikeSuccess, [isLikeSuccess]);
-return (
-  <div
-    className={`footer-item ${likeColor ? 'icon-likes' : ''}`}
-    onClick={(e) => handleLikes(e, item._id)}></div>
-);
+return <div className={`footer-item ${likeColor ? "icon-likes" : ""}`}></div>;
 ```
 
 ### 5. useCallback Hook
@@ -215,10 +211,13 @@ useCallback 可以说是 useMemo 的语法糖；它的使用和 useMemo 是一�
 ```jsx
 // 获取点赞数
 const getLikesNumber = useCallback(
-  (likes) => (isLikeSuccess ? likes + 1 : likes),
-  [isLikeSuccess]
+  (id, likes) => (likeList.includes(id) ? likes + 1 : likes),
+  [likeList]
 );
-return <div className="footer-text">{getLikesNumber(item.likes)}</div>;
+
+return (
+  <div className="footer-text">{getLikesNumber(item._id, item.likes)}</div>
+);
 ```
 
 - useMemo、useCallback 功能跟`vue`中的`computed`类似，`computed`中会自动监听所有依赖值，只要其中一个依赖值的数据发生变化，便会重新计算更新数据
@@ -228,8 +227,8 @@ return <div className="footer-text">{getLikesNumber(item.likes)}</div>;
 
 ```jsx
 // useHooks/useClickLikes.js
-import { useState, useMemo, useCallback, useRef } from 'react';
-import base from '@/utils/base';
+import { useState, useMemo, useCallback, useRef } from "react";
+import base from "@/utils/base";
 /**
  * 封装点赞逻辑
  * @requestApi api请求的path
@@ -258,7 +257,7 @@ const useClickLike = (requestApi) => {
       })
       .catch(() => {
         setLikeSuccess(false);
-        base.toast('点赞失败');
+        base.toast("点赞失败");
       });
   };
 
@@ -294,7 +293,7 @@ const List = (props) => {
 
 ```jsx
 // 父组件
-let [params, setParams] = useState({ type: '' });
+let [params, setParams] = useState({ type: "" });
 <LabelSelect params={params} setParams={setParams} />;
 ```
 
@@ -304,7 +303,7 @@ const LabelSelect = (props) => {
   let { params, setParams } = props;
 
   const handleLabel = () => {
-    params.type = 'js';
+    params.type = "js";
     setParams({ ...params });
   };
 };
@@ -326,9 +325,9 @@ const LabelSelect = (props) => {
 
 ```jsx
 // tabbar/index.jsx
-import { useNavigate, useLocation } from 'react-router-dom';
-import { TabBar } from 'antd-mobile';
-import { Outlet } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
+import { TabBar } from "antd-mobile";
+import { Outlet } from "react-router-dom";
 
 const FixedBottomNavigation = () => {
   let navigate = useNavigate();
@@ -349,7 +348,8 @@ const FixedBottomNavigation = () => {
         activeKey={pathname}
         onChange={(value) => {
           setRouteActive(value);
-        }}>
+        }}
+      >
         {tabs.map((item) => (
           <TabBar.Item key={item.path} icon={item.icon} title={item.title} />
         ))}
@@ -362,14 +362,14 @@ export default FixedBottomNavigation;
 
 ```jsx
 // router/index.jsx
-import { lazy, Suspense } from 'react';
-import { Loading } from 'antd-mobile';
-import { useRoutes } from 'react-router-dom';
-import Tabbar from '@/components/tabbar';
+import { lazy, Suspense } from "react";
+import { Loading } from "antd-mobile";
+import { useRoutes } from "react-router-dom";
+import Tabbar from "@/components/tabbar";
 
-const Home = lazy(() => import('@/pages/home'));
-const Label = lazy(() => import('@/pages/label'));
-const Article = lazy(() => import('@/pages/article'));
+const Home = lazy(() => import("@/pages/home"));
+const Label = lazy(() => import("@/pages/label"));
+const Article = lazy(() => import("@/pages/article"));
 // 路由懒加载，需配合Suspense使用
 const lazyLoad = (children) => {
   return <Suspense fallback={<Loading />}>{children}</Suspense>;
@@ -377,20 +377,20 @@ const lazyLoad = (children) => {
 const AppRouter = () => {
   return useRoutes([
     {
-      path: '/',
+      path: "/",
       element: <Tabbar />,
       children: [
         {
-          path: 'home',
+          path: "home",
           element: lazyLoad(<Home />),
         },
         {
-          path: 'label',
+          path: "label",
           element: lazyLoad(<Label />),
         },
       ],
     },
-    { path: '/article/detail/:id', element: lazyLoad(<Article />) },
+    { path: "/article/detail/:id", element: lazyLoad(<Article />) },
   ]);
 };
 export default AppRouter;
@@ -400,10 +400,10 @@ export default AppRouter;
 
 ```jsx
 // redux/store,js
-import { createStore, applyMiddleware } from 'redux';
-import reducer from './reducers';
-import thunk from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { createStore, applyMiddleware } from "redux";
+import reducer from "./reducers";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
 
 export default createStore(
   reducer,
@@ -416,8 +416,8 @@ export default createStore(
 
 ```jsx
 // redux/reducers/index.js
-import { combineReducers } from 'redux';
-import label from './label';
+import { combineReducers } from "redux";
+import label from "./label";
 
 export default combineReducers({
   label,
@@ -428,9 +428,9 @@ export default combineReducers({
 
 ```jsx
 // useHooks/useGetLabelList.js
-import { useEffect } from 'react';
-import { getLabelList } from '@/redux/actions/label';
-import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from "react";
+import { getLabelList } from "@/redux/actions/label";
+import { useSelector, useDispatch } from "react-redux";
 
 const useGetLabelList = () => {
   let labelList = useSelector((state) => state.label);
@@ -460,16 +460,16 @@ export default useGetLabelList;
 
 ```js
 // src/setupProxy.js
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = (app) => {
   app.use(
-    createProxyMiddleware('/client_api', {
-      target: 'http://localhost:3000/client_api/', // 设置目标服务器host
+    createProxyMiddleware("/client_api", {
+      target: "http://localhost:3000/client_api/", // 设置目标服务器host
       secure: false,
       changeOrigin: true, // 是否需要改变原始主机头为目标URL
       pathRewrite: {
-        '^/client_api': '/', // 重写目标url路径，将client_api前缀去掉
+        "^/client_api": "/", // 重写目标url路径，将client_api前缀去掉
       },
     })
   );
@@ -481,7 +481,7 @@ module.exports = (app) => {
 ### 1. React.memo
 
 ```jsx
-import React from 'react';
+import React from "react";
 
 const SvgIcon = (prop) => {
   let iconName = `#${prop.name}`;
@@ -563,10 +563,10 @@ export default {
   auth,
   log,
   mongodb: {
-    username: 'wall', // 数据库用户
+    username: "wall", // 数据库用户
     pwd: 123456, // 数据库密码
-    address: 'localhost:27017',
-    db: 'wallBlog', // 数据库名
+    address: "localhost:27017",
+    db: "wallBlog", // 数据库名
   },
 };
 ```
@@ -651,14 +651,14 @@ CSS Modules 允许通过自动创建 `[filename]\_[classname]\_\_[hash]` 格式�
 配合 sass 使用的话，只要把`.css`后缀名改为`.scss`即可，类似 vue 中的`scoped`，给每个样式文件添加唯一的`hash`值
 
 ```jsx
-import style from './intro.module.scss';
+import style from "./intro.module.scss";
 
 const Intro = () => {
   return (
     <>
-      <div className={style['intro-container']}>
-        <div className={style['intro-box']}>
-          <div className={style['intro-title']}>WALL-BLOG</div>
+      <div className={style["intro-container"]}>
+        <div className={style["intro-box"]}>
+          <div className={style["intro-title"]}>WALL-BLOG</div>
         </div>
       </div>
     </>
