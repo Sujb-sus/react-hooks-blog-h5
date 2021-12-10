@@ -12,7 +12,7 @@ import './tabbar.scss';
 import useDocumentTitle from '@/useHooks/useDocumentTitle';
 
 const FixedBottomNavigation = () => {
-  let tabs = [
+  const tabs = [
     {
       path: '/',
       title: '首页',
@@ -34,10 +34,10 @@ const FixedBottomNavigation = () => {
       icon: <UserOutline />,
     },
   ];
-  let navigate = useNavigate();
-  let location = useLocation();
-  let { pathname } = location;
-  let index = tabs.findIndex((item) => item.path === pathname);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
+  const index = tabs.findIndex((item) => item.path === pathname);
   useDocumentTitle(tabs[index]?.title);
   // 路由跳转
   const setRouteActive = (path) => {

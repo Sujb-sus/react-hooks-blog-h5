@@ -8,14 +8,14 @@ import './label.scss';
 
 const Label = () => {
   useGetLabelList();
-  let tabList = [
+  const tabList = [
     { title: '全部', key: '' },
     { title: '推荐', key: 'level' },
     { title: '最新', key: 'releaseTime' },
     { title: '最热', key: 'pv' },
     { title: '最赞', key: 'likes' },
   ];
-  let [params, setParams] = useState({
+  const [params, setParams] = useState({
     keyword: '',
     sortBy: '',
     type: '',
@@ -37,10 +37,8 @@ const Label = () => {
     <div className="common-pb">
       <Search
         placeholder="请输入搜索关键词"
-        showCancelButton
         clearOnCancel
         onSearch={handleSearch}
-        onCancel={handleSearch}
       />
 
       <LabelSelect params={params} setParams={setParams} />

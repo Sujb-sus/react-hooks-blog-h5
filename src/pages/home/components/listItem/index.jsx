@@ -5,10 +5,10 @@ import useGetLabelColor from '@/useHooks/useGetLabelColor';
 import { useNavigate } from 'react-router-dom';
 
 const ListItem = (props) => {
-  let { item } = props;
-  let { getLikesNumber, getLikeColor, handleLikes } = props;
-  let { getLabelColor } = useGetLabelColor();
-  let navigate = useNavigate();
+  const { item } = props;
+  const { getLikesNumber, getLikeColor, handleLikes } = props;
+  const { getLabelColor } = useGetLabelColor();
+  const navigate = useNavigate();
 
   return (
     <div

@@ -15,11 +15,11 @@ import NoData from '@/components/noData';
 import './message.scss';
 
 const Message = () => {
-  let { getLikesNumber, getLikeColor, handleLikes, setLikeList } =
+  const { getLikesNumber, getLikeColor, handleLikes, setLikeList } =
     useClickLikes(apiUpdateLikes);
 
-  let [commentList, setCommentList] = useState([]);
-  let [hasMore, setHasMore] = useState(false);
+  const [commentList, setCommentList] = useState([]);
+  const [hasMore, setHasMore] = useState(false);
   let editorRef = useRef();
   let pageindex = useRef(1);
   let replyCount = useRef(0);

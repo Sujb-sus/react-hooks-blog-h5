@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import './labelSelect.scss';
 
 const LabelSelect = (props) => {
-  let { params, setParams } = props;
-  let labelList = useSelector((state) => state.label);
+  const { params, setParams } = props;
+  const labelList = useSelector((state) => state.label);
+
   let activeIndex = useRef(-1);
   let labelName = useRef('');
 

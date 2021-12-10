@@ -9,11 +9,11 @@ import base from '@/utils/base';
 import './list.scss';
 
 const List = (props) => {
-  let { getLikesNumber, getLikeColor, handleLikes, setLikeList } =
+  const { getLikesNumber, getLikeColor, handleLikes, setLikeList } =
     useClickLikes(apiUpdateLikes);
 
-  let [list, setList] = useState([]);
-  let [hasMore, setHasMore] = useState(false);
+  const [list, setList] = useState([]);
+  const [hasMore, setHasMore] = useState(false);
   let total = useRef(-1);
   let pageindex = useRef(1);
   let pagesize = 10;
@@ -60,7 +60,7 @@ const List = (props) => {
   const InfiniteScrollContent = ({ hasMore }) => {
     return (
       <>
-        {pageindex.current > 1 &&
+        {total.current > 10 &&
           (hasMore ? <span>Loading</span> : <span>--- 我是有底线的 ---</span>)}
       </>
     );

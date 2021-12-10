@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { apiGetBlogDetail, apiUpdatePV } from "@/api/blog";
-import SvgIcon from "@/components/svgIcon";
-import { formatTime, formatNumber } from "@/utils/filter";
-import base from "@/utils/base";
-import "./article.scss";
-import "@/styles/markdown/index.scss";
-import { useParams } from "react-router-dom";
-import useGetLabelColor from "@/useHooks/useGetLabelColor";
-import useGetLabelList from "@/useHooks/useGetLabelList";
-import useDocumentTitle from "@/useHooks/useDocumentTitle";
+import React, { useState, useEffect } from 'react';
+import { apiGetBlogDetail, apiUpdatePV } from '@/api/blog';
+import SvgIcon from '@/components/svgIcon';
+import { formatTime, formatNumber } from '@/utils/filter';
+import base from '@/utils/base';
+import './article.scss';
+import '@/styles/markdown/index.scss';
+import { useParams } from 'react-router-dom';
+import useGetLabelColor from '@/useHooks/useGetLabelColor';
+import useGetLabelList from '@/useHooks/useGetLabelList';
+import useDocumentTitle from '@/useHooks/useDocumentTitle';
 
 const Article = () => {
   useGetLabelList();
-  useDocumentTitle("文章详情");
-  let { getLabelColor } = useGetLabelColor();
-  let params = useParams();
-  let id = params.id;
-  let [detail, setDetail] = useState(null);
+  useDocumentTitle('文章详情');
+  const { getLabelColor } = useGetLabelColor();
+  const params = useParams();
+  const id = params.id;
+  const [detail, setDetail] = useState(null);
 
   useEffect(async () => {
     base.showLoading();
@@ -31,7 +31,7 @@ const Article = () => {
       .then((res) => {
         res?.data && setDetail(res.data);
       })
-      .catch((err) => console.log("err", err))
+      .catch((err) => console.log('err', err))
       .finally(() => {});
   };
   // 更新浏览量
@@ -50,7 +50,7 @@ const Article = () => {
             <div className="func-icon">
               <SvgIcon name="icon-date02"></SvgIcon>
               <div className="box-text">
-                {formatTime(detail.releaseTime, "yyyy-MM-dd")}
+                {formatTime(detail.releaseTime, 'yyyy-MM-dd')}
               </div>
             </div>
             <div className="func-icon">
@@ -68,16 +68,14 @@ const Article = () => {
             className="detail-main fmt"
             dangerouslySetInnerHTML={{
               __html: detail.html.replace(/<a /gi, `<a target='_blank'`),
-            }}
-          ></div>
+            }}></div>
           <div className="detail-label">
             标签：
             {detail.type.map((label) => (
               <div
                 className="box-text label-text"
                 style={{ backgroundColor: getLabelColor(label) }}
-                key={label}
-              >
+                key={label}>
                 {label}
               </div>
             ))}

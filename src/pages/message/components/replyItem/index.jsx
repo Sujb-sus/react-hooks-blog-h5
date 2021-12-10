@@ -4,7 +4,7 @@ import { formatTime } from '@/utils/filter';
 import './replyItem.scss';
 
 const ReplyItem = (props) => {
-  let { replyItem } = props;
+  const { replyItem } = props;
 
   return (
     <div className="reply-item">

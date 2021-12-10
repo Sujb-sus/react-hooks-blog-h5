@@ -7,7 +7,7 @@ import ReplyItem from '../replyItem';
 import './commentItem.scss';
 
 const CommentItem = (props) => {
-  let {
+  const {
     commentItem,
     initMessageData,
     getLikesNumber,
@@ -15,11 +15,7 @@ const CommentItem = (props) => {
     handleLikes,
   } = props;
 
-  let [isEdit, setIsEdit] = useState(false);
-  let currentId = useRef('');
-  let byReplyUser = useRef('');
-  let editorRef = useRef();
-  let colorList = [
+  const colorList = [
     '#EB6841',
     '#3FB8AF',
     '#464646',
@@ -29,6 +25,10 @@ const CommentItem = (props) => {
     '#83AF9B',
     '#036564',
   ];
+  const [isEdit, setIsEdit] = useState(false);
+  let currentId = useRef('');
+  let byReplyUser = useRef('');
+  let editorRef = useRef();
 
   // 点击回复事件
   const handleReply = (id, name) => {

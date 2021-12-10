@@ -4,10 +4,10 @@ import { TextArea, Input } from 'antd-mobile';
 import './commentEditor.scss';
 
 const CommentEditor = forwardRef((props, ref) => {
-  let [content, setContent] = useState('');
-  let [nickname, setNickname] = useState('');
-  let { submitSuccess } = props;
-  let colorList = [
+  const [content, setContent] = useState('');
+  const [nickname, setNickname] = useState('');
+  const { submitSuccess } = props;
+  const colorList = [
     '#EB6841',
     '#3FB8AF',
     '#464646',
